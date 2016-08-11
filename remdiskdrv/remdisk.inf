@@ -1,0 +1,100 @@
+;
+; remdisk.inf
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=RemDisk
+ClassGuid={AF2A3B65-6D57-4AD0-B0E4-396426430B13}
+Provider=%ManufacturerName%
+CatalogFile=remdisk.cat
+DriverVer=
+
+[DestinationDirs]
+DefaultDestDir = 12
+
+; ================= Class section =====================
+
+[ClassInstall32]
+Addreg=RemDiskClassReg
+
+[RemDiskClassReg]
+HKR,,,0,%ClassName%
+HKR,,Icon,,-5
+HKLM,"SYSTEM\CurrentControlSet\Control\Class\{AF2A3B65-6D57-4AD0-B0E4-396426430B13}", "UpperFilters",0x00010000,"partmgr"
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+remdisk.sys  = 1,,
+
+;*****************************************
+; Install Section
+;*****************************************
+
+[Manufacturer]
+%ManufacturerName%=Standard,NT$ARCH$
+
+[Standard.NT$ARCH$]
+%ramdisk.DeviceDesc%=remdisk_Device, RemBus\RAMDisk
+%filedisk.DeviceDesc%=remdisk_Device, RemBus\FileDisk
+%encramdisk.DeviceDesc%=remdisk_Device, RemBus\EncryptedRAMDisk
+%encfiledisk.DeviceDesc%=remdisk_Device, RemBus\EncryptedFileDisk
+%remdisk.DeviceDesc%=remdisk_Device, RemBus\RemDisk
+
+[remdisk_Device.NT]
+CopyFiles=Drivers_Dir
+
+[Drivers_Dir]
+remdisk.sys
+
+;-------------- Service installation
+[remdisk_Device.NT.Services]
+AddService = remdisk,%SPSVCINST_ASSOCSERVICE%, remdisk_Service_Inst
+
+; -------------- remdiskdrv driver install sections
+[remdisk_Service_Inst]
+DisplayName    = %remdisk.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\remdisk.sys
+LoadOrderGroup = Extended Base
+
+;
+;--- remdiskdrv_Device Coinstaller installation ------
+;
+
+[DestinationDirs]
+remdisk_Device_CoInstaller_CopyFiles = 11
+
+[remdisk_Device.NT.CoInstallers]
+AddReg=remdisk_Device_CoInstaller_AddReg
+CopyFiles=remdisk_Device_CoInstaller_CopyFiles
+
+[remdisk_Device_CoInstaller_AddReg]
+HKR,,CoInstallers32,0x00010000, "WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll,WdfCoInstaller"
+
+[remdisk_Device_CoInstaller_CopyFiles]
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll
+
+[SourceDisksFiles]
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with SourceDisksNames
+
+[remdisk_Device.NT.Wdf]
+KmdfService =  remdisk, remdisk_wdfsect
+[remdisk_wdfsect]
+KmdfLibraryVersion = $KMDFVERSION$
+
+[Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
+ManufacturerName="Martin Drab" 
+ClassName="RemDisk" ; TODO: edit ClassName
+DiskName = "remdisk Installation Disk"
+remdisk.DeviceDesc = "RemDisk Device"
+RAMdisk.DeviceDesc = "RAM disk device"
+filedisk.DeviceDesc = "File-backed disk device"
+encRAMdisk.DeviceDesc = "Encrypted RAM disk device"
+encfiledisk.DeviceDesc = "Encrypted file-backed disk device"
+remdisk.SVCDESC = "RemDisk Service"

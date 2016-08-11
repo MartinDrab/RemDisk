@@ -1,0 +1,92 @@
+;
+; RemBus.inf
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=RemBus
+ClassGuid={78A1C341-4539-11d3-B88D-00C04FAD5171} ; TODO: edit ClassGuid
+Provider=%ManufacturerName%
+CatalogFile=RemBus.cat
+DriverVer= ; TODO: set DriverVer in stampinf property pages
+
+[DestinationDirs]
+DefaultDestDir = 12
+
+; ================= Class section =====================
+
+[ClassInstall32]
+Addreg=SampleClassReg
+
+[SampleClassReg]
+HKR,,,0,%ClassName%
+HKR,,Icon,,-5
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+RemBus.sys  = 1,,
+
+;*****************************************
+; Install Section
+;*****************************************
+
+[Manufacturer]
+%ManufacturerName%=Standard,NT$ARCH$
+
+[Standard.NT$ARCH$]
+%RemBus.DeviceDesc%=RemBus_Device, Root\RemBus
+
+[RemBus_Device.NT]
+CopyFiles=Drivers_Dir
+CopyINF=RemDisk.inf
+
+[Drivers_Dir]
+RemBus.sys
+
+;-------------- Service installation
+[RemBus_Device.NT.Services]
+AddService = RemBus,%SPSVCINST_ASSOCSERVICE%, RemBus_Service_Inst
+
+; -------------- RemBus driver install sections
+[RemBus_Service_Inst]
+DisplayName    = %RemBus.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\RemBus.sys
+LoadOrderGroup = Extended Base
+
+;
+;--- RemBus_Device Coinstaller installation ------
+;
+
+[DestinationDirs]
+RemBus_Device_CoInstaller_CopyFiles = 11
+
+[RemBus_Device.NT.CoInstallers]
+AddReg=RemBus_Device_CoInstaller_AddReg
+CopyFiles=RemBus_Device_CoInstaller_CopyFiles
+
+[RemBus_Device_CoInstaller_AddReg]
+HKR,,CoInstallers32,0x00010000, "WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll,WdfCoInstaller"
+
+[RemBus_Device_CoInstaller_CopyFiles]
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll
+
+[SourceDisksFiles]
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with SourceDisksNames
+
+[RemBus_Device.NT.Wdf]
+KmdfService =  RemBus, RemBus_wdfsect
+[RemBus_wdfsect]
+KmdfLibraryVersion = $KMDFVERSION$
+
+[Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
+ManufacturerName="Martin Drab"
+ClassName="RemBus" ; TODO: edit ClassName
+DiskName = "RemBus Installation Disk"
+RemBus.DeviceDesc = "RemBus device"
+RemBus.SVCDESC = "RemBus service"

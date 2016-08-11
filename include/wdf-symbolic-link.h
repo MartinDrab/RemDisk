@@ -1,0 +1,24 @@
+
+#ifndef __WDF_SYMBOLIC_LINK_H__
+#define __WDF_SYMBOLIC_LINK_H__
+
+#include <ntifs.h>
+#include <wdf.h>
+
+
+typedef WDFOBJECT WDFSYMBOLICLINK;
+
+typedef struct _WDF_SYMBOLIC_LINK_CONTEXT {
+	UNICODE_STRING LinkName;
+	ULONG PoolTag;
+	BOOLEAN Initialized;
+} WDF_SYMBOLIC_LINK_CONTEXT, *PWDF_SYMBOLIC_LINK_CONTEXT;
+
+WDF_DECLARE_CONTEXT_TYPE_WITH_NAME(WDF_SYMBOLIC_LINK_CONTEXT, WdfSymbolicLinkGetcontext)
+
+
+NTSTATUS WdfSymbolicLinkCreate(WDFOBJECT Parent, PUNICODE_STRING Source, PUNICODE_STRING Target, ULONG PoolTag, WDFSYMBOLICLINK *Link);
+
+
+
+#endif 
