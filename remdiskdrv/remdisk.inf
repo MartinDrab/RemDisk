@@ -12,6 +12,7 @@ DriverVer=
 
 [DestinationDirs]
 DefaultDestDir = 12
+remdisk_Device_CoInstaller_CopyFiles = 11
 
 ; ================= Class section =====================
 
@@ -28,6 +29,7 @@ HKLM,"SYSTEM\CurrentControlSet\Control\Class\{AF2A3B65-6D57-4AD0-B0E4-396426430B
 
 [SourceDisksFiles]
 remdisk.sys  = 1,,
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with SourceDisksNames
 
 ;*****************************************
 ; Install Section
@@ -66,9 +68,6 @@ LoadOrderGroup = Extended Base
 ;--- remdiskdrv_Device Coinstaller installation ------
 ;
 
-[DestinationDirs]
-remdisk_Device_CoInstaller_CopyFiles = 11
-
 [remdisk_Device.NT.CoInstallers]
 AddReg=remdisk_Device_CoInstaller_AddReg
 CopyFiles=remdisk_Device_CoInstaller_CopyFiles
@@ -79,8 +78,6 @@ HKR,,CoInstallers32,0x00010000, "WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll,WdfC
 [remdisk_Device_CoInstaller_CopyFiles]
 WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll
 
-[SourceDisksFiles]
-WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with SourceDisksNames
 
 [remdisk_Device.NT.Wdf]
 KmdfService =  remdisk, remdisk_wdfsect

@@ -12,6 +12,7 @@ DriverVer= ; TODO: set DriverVer in stampinf property pages
 
 [DestinationDirs]
 DefaultDestDir = 12
+RemBus_Device_CoInstaller_CopyFiles = 11
 
 ; ================= Class section =====================
 
@@ -27,6 +28,7 @@ HKR,,Icon,,-5
 
 [SourceDisksFiles]
 RemBus.sys  = 1,,
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with SourceDisksNames
 
 ;*****************************************
 ; Install Section
@@ -62,8 +64,6 @@ LoadOrderGroup = Extended Base
 ;--- RemBus_Device Coinstaller installation ------
 ;
 
-[DestinationDirs]
-RemBus_Device_CoInstaller_CopyFiles = 11
 
 [RemBus_Device.NT.CoInstallers]
 AddReg=RemBus_Device_CoInstaller_AddReg
@@ -74,9 +74,6 @@ HKR,,CoInstallers32,0x00010000, "WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll,WdfC
 
 [RemBus_Device_CoInstaller_CopyFiles]
 WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll
-
-[SourceDisksFiles]
-WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with SourceDisksNames
 
 [RemBus_Device.NT.Wdf]
 KmdfService =  RemBus, RemBus_wdfsect
