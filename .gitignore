@@ -3,3 +3,4 @@ lib
 tmp
 /RemBus/RemBus.vcxproj.user
 /.vs/remdisk/v14/.suo
+/RemDiskDrv/RemDiskDrv.vcxproj.user
