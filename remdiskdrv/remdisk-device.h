@@ -59,7 +59,6 @@ typedef struct _REMDISK_DEVICE_EXTENSION {
 	DISK_GEOMETRY DiskGeometry;
 	HANDLE Partition0Directory;
 	UCHAR XEXKey[16];
-	PREMDISK_ENCRYPTED_FOOTER EncryptedFooter;
 	BOOLEAN PreventMediaRemoval;
 	EREmDiskInfoState State;
 	KEVENT StateEvent;

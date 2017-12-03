@@ -224,7 +224,7 @@ NTSTATUS RAMDiskInit(WDFDEVICE Device, PREMDISK_DEVICE_EXTENSION Extension, PREM
 	NTSTATUS status = STATUS_UNSUCCESSFUL;
 	DEBUG_ENTER_FUNCTION("Device=0x%p; Extension=0x%p; DiskInfo=0x%p; QueueLevel=0x%p", Device, Extension, DiskInfo, QueueLevel);
 
-	Extension->Parameters.RAMDisk.DiskImage = MmAllocateNonCachedMemory((SIZE_T)Extension->DiskSize + sizeof(REMDISK_ENCRYPTED_FOOTER));
+	Extension->Parameters.RAMDisk.DiskImage = MmAllocateNonCachedMemory((SIZE_T)Extension->DiskSize);
 	status = (Extension->Parameters.RAMDisk.DiskImage != NULL) ? STATUS_SUCCESS : STATUS_INSUFFICIENT_RESOURCES;
 	if (NT_SUCCESS(status)) {
 		RtlSecureZeroMemory(Extension->Parameters.RAMDisk.DiskImage, (SIZE_T)Extension->DiskSize);
@@ -288,7 +288,7 @@ NTSTATUS RAMDiskInit(WDFDEVICE Device, PREMDISK_DEVICE_EXTENSION Extension, PREM
 		}
 
 		if (!NT_SUCCESS(status)) {
-			MmFreeNonCachedMemory(Extension->Parameters.RAMDisk.DiskImage, (SIZE_T)Extension->DiskSize + sizeof(REMDISK_ENCRYPTED_FOOTER));
+			MmFreeNonCachedMemory(Extension->Parameters.RAMDisk.DiskImage, (SIZE_T)Extension->DiskSize);
 			Extension->Parameters.RAMDisk.DiskImage = NULL;
 		}
 	}
@@ -303,7 +303,7 @@ VOID RAMDiskFinit(PREMDISK_DEVICE_EXTENSION Extension)
 	DEBUG_ENTER_FUNCTION("Extenson=0x%p", Extension);
 
 	if (FlagOn(REMDISK_FLAG_ALLOCATED, Extension->Flags)) {
-		MmFreeNonCachedMemory(Extension->Parameters.RAMDisk.DiskImage, (SIZE_T)Extension->DiskSize + sizeof(REMDISK_ENCRYPTED_FOOTER));
+		MmFreeNonCachedMemory(Extension->Parameters.RAMDisk.DiskImage, (SIZE_T)Extension->DiskSize);
 		Extension->Parameters.RAMDisk.DiskImage = NULL;
 		Extension->Flags &= (~REMDISK_FLAG_ALLOCATED);
 	}

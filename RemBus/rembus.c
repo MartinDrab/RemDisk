@@ -322,8 +322,6 @@ VOID RemBusEvtIoDeviceControl(IN WDFQUEUE Queue, IN WDFREQUEST Request, IN size_
 				output->DriversInfo.Flags =
 					REMBUS_FLAG_SUPPORTS_PLAIN_FILE_DISKS |
 					REMBUS_FLAG_SUPPORTS_PLAIN_RAM_DISKS |
-					REMBUS_FLAG_SUPPORTS_EF_FILE_DISKS |
-					REMBUS_FLAG_SUPPORTS_EF_RAM_DISKS |
 					REMBUS_FLAG_SUPPORTS_ENCRYPTED_FILE_DISKS |
 					REMBUS_FLAG_SUPPORTS_ENCRYPTED_RAM_DISKS;
 			}
@@ -367,8 +365,6 @@ VOID RemBusEvtIoDeviceControl(IN WDFQUEUE Queue, IN WDFREQUEST Request, IN size_
 							status = ObReferenceObjectByHandle(input->FileHandle, desiredAccess, *IoFileObjectType, WdfRequestGetRequestorMode(Request), &diskInfo->BackingFileObject, NULL);
 						}
 					} else if (diskInfo->Type == rdtRAMDisk) {
-						if (FlagOn(REMDISK_FLAG_ENCRYPTED_FOOTER, diskInfo->Flags))
-							diskInfo->DiskSize += sizeof(REMDISK_ENCRYPTED_FOOTER);
 					} else if (diskInfo->Type == rdtFileDisk)
 						status = STATUS_INVALID_PARAMETER;
 

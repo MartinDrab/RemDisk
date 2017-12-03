@@ -191,9 +191,6 @@ DWORD RemDiskCreate(ULONG DiskNumber, EREMDiskType Type, ULONG64 DiskSize, const
 
 						buf = HeapAlloc(_remDiskHeap, HEAP_ZERO_MEMORY, chunkSize);
 						if (buf != NULL) {
-							if (Flags & REMDISK_FLAG_ENCRYPTED_FOOTER)
-								DiskSize += 4096;
-
 							remaining.QuadPart = DiskSize;
 							while (ret == ERROR_SUCCESS && remaining.QuadPart > 0) {
 								ULONG bytesWritten = 0;

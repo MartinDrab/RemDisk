@@ -222,15 +222,9 @@ static NTSTATUS _RemDiskSetPassword(PREMDISK_DEVICE_EXTENSION Extension, ERemDis
 	switch (ChangeType) {
 		case rdpcChange: {
 			if (ExtDiskEncrypted(Extension)) {
-				if (FlagOn(REMDISK_FLAG_ENCRYPTED_FOOTER, Extension->Flags)) {
-					RtlCopyMemory(oldKey, Extension->XEXKey, sizeof(oldKey));
-					status = EncryptedFooterChangePassword(Extension->EncryptedFooter, Password, OldPassword, newKey);
-				} else {
-					DeriveKey(Password, sizeof(Password), newKey);
-					DeriveKey(OldPassword, sizeof(OldPassword), oldKey);
-					status = (memcmp(Extension->XEXKey, oldKey, sizeof(oldKey)) == 0) ? STATUS_SUCCESS : STATUS_ACCESS_DENIED;
-				}
-
+				DeriveKey(Password, sizeof(Password), newKey);
+				DeriveKey(OldPassword, sizeof(OldPassword), oldKey);
+				status = (memcmp(Extension->XEXKey, oldKey, sizeof(oldKey)) == 0) ? STATUS_SUCCESS : STATUS_ACCESS_DENIED;
 				if (NT_SUCCESS(status)) {
 					ULONG64 offset = 0;
 					ULONG64 remaining = 0;
@@ -264,16 +258,8 @@ static NTSTATUS _RemDiskSetPassword(PREMDISK_DEVICE_EXTENSION Extension, ERemDis
 							ExFreePoolWithTag(buffer, RAMDISK_TAG);
 						} else status = STATUS_INSUFFICIENT_RESOURCES;
 
-						if (NT_SUCCESS(status)) {
-							if (FlagOn(REMDISK_FLAG_ENCRYPTED_FOOTER, Extension->Flags))
-								status = Extension->DiskCallbacks.WriteRawBuffer(Extension, Extension->DiskSize, Extension->EncryptedFooter, sizeof(REMDISK_ENCRYPTED_FOOTER));
-							
-							if (NT_SUCCESS(status))
-								RtlCopyMemory(Extension->XEXKey, newKey, sizeof(Extension->XEXKey));
-						}
-
-						if (!NT_SUCCESS(status) && FlagOn(REMDISK_FLAG_ENCRYPTED_FOOTER, Extension->Flags))
-							EncryptedFooterChangePassword(Extension->EncryptedFooter, OldPassword, Password, NULL);
+						if (NT_SUCCESS(status))
+							RtlCopyMemory(Extension->XEXKey, newKey, sizeof(Extension->XEXKey));
 
 						_RemDiskStateChange(Extension, rdisWorking);
 					}
@@ -282,38 +268,17 @@ static NTSTATUS _RemDiskSetPassword(PREMDISK_DEVICE_EXTENSION Extension, ERemDis
 				}
 			} else status = STATUS_INVALID_PARAMETER;	
 		} break;
-		case rdpcSetEncryptedFooter:
 		case rdpcSet: {
 			_SuspendRequests(Extension);
 			if (!ExtDiskEncrypted(Extension)) {
-				if (ChangeType == rdpcSetEncryptedFooter) {
-					Extension->EncryptedFooter = (PREMDISK_ENCRYPTED_FOOTER)ExAllocatePoolWithTag(NonPagedPool, sizeof(REMDISK_ENCRYPTED_FOOTER), RAMDISK_TAG);
-					if (Extension->EncryptedFooter != NULL)
-						EncryptedFooterCreate(Extension->EncryptedFooter, Password, Extension->XEXKey);
-					else status = STATUS_INSUFFICIENT_RESOURCES;
-				} else RtlCopyMemory(Extension->XEXKey, newKey, sizeof(Extension->XEXKey));
-				
+				RtlCopyMemory(Extension->XEXKey, newKey, sizeof(Extension->XEXKey));
 				if (NT_SUCCESS(status)) {
 					status = _RemDiskXXXCrypt(Extension, TRUE);
-					if (NT_SUCCESS(status)) {
-						if (ChangeType == rdpcSetEncryptedFooter) {
-							status = Extension->DiskCallbacks.WriteRawBuffer(Extension, Extension->DiskSize, Extension->EncryptedFooter, sizeof(REMDISK_ENCRYPTED_FOOTER));
-							if (NT_SUCCESS(status))
-								Extension->Flags |= REMDISK_FLAG_ENCRYPTED_FOOTER;
-						}
+					if (NT_SUCCESS(status))
+						Extension->Flags |= REMDISK_FLAG_ENCRYPTED;
 
-						if (NT_SUCCESS(status))
-							Extension->Flags |= REMDISK_FLAG_ENCRYPTED;
-					}
-
-					if (!NT_SUCCESS(status)) {
-						if (ChangeType == rdpcSetEncryptedFooter) {
-							ExFreePoolWithTag(Extension->EncryptedFooter, RAMDISK_TAG);
-							Extension->EncryptedFooter = NULL;
-						}
-
+					if (!NT_SUCCESS(status))
 						RtlSecureZeroMemory(Extension->XEXKey, sizeof(Extension->XEXKey));
-					}
 				}
 			} else status = STATUS_ALREADY_REGISTERED;
 
@@ -324,12 +289,7 @@ static NTSTATUS _RemDiskSetPassword(PREMDISK_DEVICE_EXTENSION Extension, ERemDis
 			if (ExtDiskEncrypted(Extension) && memcmp(newKey, Extension->XEXKey, sizeof(Extension->XEXKey)) == 0) {
 				status = _RemDiskXXXCrypt(Extension, FALSE);
 				if (NT_SUCCESS(status)) {
-					Extension->Flags &= (~REMDISK_FLAG_ENCRYPTED);
-					if (FlagOn(REMDISK_FLAG_ENCRYPTED_FOOTER, Extension->Flags)) {
-						ExFreePoolWithTag(Extension->EncryptedFooter, RAMDISK_TAG);
-						Extension->EncryptedFooter = NULL;
-					}
-					
+					Extension->Flags &= (~REMDISK_FLAG_ENCRYPTED);					
 					RtlSecureZeroMemory(Extension->XEXKey, sizeof(Extension->XEXKey));
 				}
 			} else status = STATUS_INVALID_PARAMETER;
@@ -377,12 +337,6 @@ static NTSTATUS _RemDiskSave(PREMDISK_DEVICE_EXTENSION Extension, HANDLE FileHan
 						offset += chunkSize;
 					}
 				}
-			}
-
-			if (NT_SUCCESS(status) && FlagOn(REMDISK_FLAG_ENCRYPTED_FOOTER, Extension->Flags)) {
-				IO_STATUS_BLOCK iosb;
-
-				status = ZwWriteFile(FileHandle, NULL, NULL, NULL, &iosb, Extension->EncryptedFooter, (ULONG)sizeof(REMDISK_ENCRYPTED_FOOTER), NULL, 0);
 			}
 
 			_RemDiskStateChange(Extension, rdisWorking);
@@ -616,10 +570,6 @@ NTSTATUS RemDiskEtvDeviceAdd(WDFDRIVER Driver, PWDFDEVICE_INIT DeviceInit)
 	pDeviceExtension->MaxTransferLength = diskInfo->MaxTranfserLength;
 	pDeviceExtension->Flags = diskInfo->Flags;
 	WdfDeviceSetAlignmentRequirement(hFDO, pDeviceExtension->DiskGeometry.BytesPerSector);
-	if (FlagOn(REMDISK_FLAG_ENCRYPTED_FOOTER, pDeviceExtension->Flags)) {
-		pDeviceExtension->DiskSize -= sizeof(REMDISK_ENCRYPTED_FOOTER);
-		diskInfo->DiskSize -= sizeof(REMDISK_ENCRYPTED_FOOTER);
-	}
 
 	_ComputeDriverGeometry(pDeviceExtension, diskInfo);
 	KeInitializeSpinLock(&pDeviceExtension->PendingSpinLock);
@@ -675,32 +625,6 @@ NTSTATUS RemDiskEtvDeviceAdd(WDFDRIVER Driver, PWDFDEVICE_INIT DeviceInit)
 		default:
 			status = STATUS_NOT_SUPPORTED;
 			break;
-	}
-
-	if (!NT_SUCCESS(status))
-		goto Cleanup;
-
-	if (FlagOn(REMDISK_FLAG_ENCRYPTED_FOOTER, pDeviceExtension->Flags)) {
-		pDeviceExtension->EncryptedFooter = (PREMDISK_ENCRYPTED_FOOTER)ExAllocatePoolWithTag(NonPagedPool, sizeof(REMDISK_ENCRYPTED_FOOTER), RAMDISK_TAG);
-		if (pDeviceExtension->EncryptedFooter == NULL) {
-			status = STATUS_INSUFFICIENT_RESOURCES;
-			goto Cleanup;
-		}
-
-		if (FlagOn(REMDISK_FLAG_FILE_SOURCE, pDeviceExtension->Flags)) {
-			status = pDeviceExtension->DiskCallbacks.ReadRawBuffer(pDeviceExtension, pDeviceExtension->DiskSize, pDeviceExtension->EncryptedFooter, sizeof(REMDISK_ENCRYPTED_FOOTER));
-			if (NT_SUCCESS(status))
-				status = EncryptedFooterLoad(pDeviceExtension->EncryptedFooter, diskInfo->Password, pDeviceExtension->XEXKey);
-		} else {
-			EncryptedFooterCreate(pDeviceExtension->EncryptedFooter, diskInfo->Password, pDeviceExtension->XEXKey);
-			status = pDeviceExtension->DiskCallbacks.WriteRawBuffer(pDeviceExtension, pDeviceExtension->DiskSize, pDeviceExtension->EncryptedFooter, sizeof(REMDISK_ENCRYPTED_FOOTER));
-		}
-
-		if (!NT_SUCCESS(status)) {
-			ExFreePoolWithTag(pDeviceExtension->EncryptedFooter, RAMDISK_TAG);
-			pDeviceExtension->EncryptedFooter = NULL;
-			goto Cleanup;
-		}
 	}
 
 	if (!NT_SUCCESS(status))
@@ -1193,14 +1117,6 @@ VOID RemDiskEvtDeviceContextCleanup(IN WDFOBJECT Device)
 	DEBUG_ENTER_FUNCTION("Device=0x%p", Device);
 	PAGED_CODE();
 	
-	if (FlagOn(REMDISK_FLAG_ENCRYPTED_FOOTER, pDeviceExtension->Flags)) {
-		pDeviceExtension->DiskSize += sizeof(REMDISK_ENCRYPTED_FOOTER);
-		if (pDeviceExtension->EncryptedFooter != NULL) {
-			ExFreePoolWithTag(pDeviceExtension->EncryptedFooter, RAMDISK_TAG);
-			pDeviceExtension->DiskSize += sizeof(REMDISK_ENCRYPTED_FOOTER);
-		}
-	}
-
 	if (pDeviceExtension->State == rdisWorking)
 		pDeviceExtension->DiskCallbacks.Finit(pDeviceExtension);
 
