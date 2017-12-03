@@ -31,7 +31,6 @@ Type
     Label6: TLabel;
     FilenameOpenDialog: TOpenDialog;
     SparseFIleCheckBox: TCheckBox;
-    EncryptedFooterCheckBox: TCheckBox;
     procedure EncryptedCheckBoxClick(Sender: TObject);
     procedure BrowseButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -83,7 +82,6 @@ If EncryptedCheckBox.Checked Then
   Password2Edit.ReadOnly := False;
   Password2Edit.Color := clWindow;
   ShowCharactersCheckBox.Enabled := True;
-  EncryptedFooterCheckBox.Enabled := True;
   end
 Else begin
   Password1Edit.ReadOnly := True;
@@ -91,7 +89,6 @@ Else begin
   Password2Edit.ReadOnly := True;
   Password2Edit.Color := clBtnFace;
   ShowCharactersCheckBox.Enabled := False;
-  EncryptedFooterCheckBox.Enabled := False;
   end;
 end;
 
@@ -116,11 +113,7 @@ If (Not EncryptedCheckBox.Checked) Or
     FCreateFlags := (FCreateFlags Or REMDISK_FLAG_WRITABLE);
 
   If EncryptedCheckBox.Checked Then
-    begin
     FCreateFlags := (FCreateFlags Or REMDISK_FLAG_ENCRYPTED);
-    If EncryptedFooterCheckBox.Checked Then
-      FCreateFlags := (FCreateFlags Or REMDISK_FLAG_ENCRYPTED_FOOTER);
-    end;
 
   If SparseFileCheckBox.Checked Then
     FCreateFlags := (FCreateFlags Or REMDISK_FLAG_SPARSE_FILE);

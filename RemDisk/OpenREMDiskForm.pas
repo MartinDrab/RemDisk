@@ -17,7 +17,6 @@ Type
     LoadAsRAMDiskCheckBox: TCheckBox;
     ReadOnlyCheckBox: TCheckBox;
     EncryptedCheckBox: TCheckBox;
-    EncryptedFooterCheckBox: TCheckBox;
     PasswordEdit: TEdit;
     ShowCharactersCheckBox: TCheckBox;
     StornoButton: TButton;
@@ -61,13 +60,11 @@ Procedure TOpenREMDiskFrm.EncryptedCheckBoxClick(Sender: TObject);
 begin
 If EncryptedCheckBox.Checked Then
   begin
-  EncryptedFooterCheckBox.Enabled := True;
   ShowCharactersCheckBox.Enabled := True;
   PasswordEdit.ReadOnly := False;
   PasswordEdit.Color := clWindow;
   end
 Else begin
-  EncryptedFooterCheckBox.Enabled := False;
   ShowCharactersCheckBox.Enabled := False;
   PasswordEdit.ReadOnly := True;
   PasswordEdit.Color := clBtnFace;
@@ -97,11 +94,7 @@ If (FileNameEdit.Text <> '') And
     FFlags := (FFlags Or REMDISK_FLAG_WRITABLE);
 
   If EncryptedCheckBox.Checked Then
-    begin
     FFlags := (FFlags Or REMDISK_FLAG_ENCRYPTED);
-    If EncryptedFooterCheckBox.Checked Then
-      FFlags := (FFlags Or REMDISK_FLAG_ENCRYPTED_FOOTER);
-    end;
 
   FPassword := PasswordEdit.Text;
   Close;

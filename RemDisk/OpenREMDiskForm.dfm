@@ -46,21 +46,13 @@ object OpenREMDiskFrm: TOpenREMDiskFrm
         TabOrder = 0
         OnClick = EncryptedCheckBoxClick
       end
-      object EncryptedFooterCheckBox: TCheckBox
-        Left = 56
-        Top = 42
-        Width = 89
-        Height = 17
-        Caption = 'Encrypted footer'
-        TabOrder = 1
-      end
       object PasswordEdit: TEdit
         Left = 56
         Top = 64
         Width = 137
         Height = 21
         PasswordChar = '*'
-        TabOrder = 2
+        TabOrder = 1
       end
       object ShowCharactersCheckBox: TCheckBox
         Left = 56
@@ -68,7 +60,7 @@ object OpenREMDiskFrm: TOpenREMDiskFrm
         Width = 121
         Height = 17
         Caption = 'Show characters'
-        TabOrder = 3
+        TabOrder = 2
         OnClick = ShowCharactersCheckBoxClick
       end
     end

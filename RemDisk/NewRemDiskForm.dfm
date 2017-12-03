@@ -78,14 +78,6 @@ object NewRemDiskFrm: TNewRemDiskFrm
         TabOrder = 3
         OnClick = ShowCharactersCheckBoxClick
       end
-      object EncryptedFooterCheckBox: TCheckBox
-        Left = 127
-        Top = 16
-        Width = 81
-        Height = 17
-        Caption = 'Footer'
-        TabOrder = 4
-      end
     end
     object GeneralGroupBox: TGroupBox
       Left = 1

@@ -221,9 +221,6 @@ If ((AFlags And REMDISK_FLAG_ENCRYPTED) <> 0) Then
 If ((AFlags And REMDISK_FLAG_OFFLINE) <> 0) Then
   Result := Result + 'Offline ';
 
-If ((AFlags And REMDISK_FLAG_ENCRYPTED_FOOTER) <> 0) Then
-  Result := Result + 'Footer ';
-
 If ((AFlags And REMDISK_FLAG_FILE_SOURCE) <> 0) Then
   Result := Result + 'FileSource ';
 
