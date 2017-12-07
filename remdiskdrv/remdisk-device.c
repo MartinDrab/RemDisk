@@ -62,12 +62,12 @@ static NTSTATUS _CreateSymbolicLink(PUNICODE_STRING DeviceName, WDFDEVICE Device
 }
 
 
-static NTSTATUS _RemDiskExtensionToEntry(PREMDISK_INFORMATION_ENTRY Entry, PREMDISK_DEVICE_EXTENSION Extension, SIZE_T BufferLength)
+static NTSTATUS _RemDiskExtensionToEntry(PREMDISK_INFORMATION_ENTRY Entry, const REMDISK_DEVICE_EXTENSION *Extension, SIZE_T BufferLength)
 {
 	ULONG requiredLength = 0;
 	UNICODE_STRING uFileName;
 	NTSTATUS status = STATUS_UNSUCCESSFUL;
-	DEBUG_ENTER_FUNCTION("Entry=0x%p; Extension=0x%p", Entry, Extension);
+	DEBUG_ENTER_FUNCTION("Entry=0x%p; Extension=0x%p; BufferLength=%zu", Entry, Extension, BufferLength);
 	DEBUG_IRQL_LESS_OR_EQUAL(APC_LEVEL);
 
 	RtlSecureZeroMemory(&uFileName, sizeof(uFileName));
@@ -115,16 +115,13 @@ static VOID _ResumeRequests(PREMDISK_DEVICE_EXTENSION Extension)
 	KeAcquireSpinLock(&Extension->PendingSpinLock, &irql);
 	IoInitializeRemoveLock(&Extension->PendingRemoveLock, 0, 0, 0);
 	while (NT_SUCCESS(WdfIoQueueFindRequest(Extension->PendingQueue, NULL, NULL, NULL, &foundRequest))) {
-		if (NT_SUCCESS(WdfIoQueueRetrieveFoundRequest(Extension->PendingQueue, foundRequest, &returnedRequest))) {
+		if (NT_SUCCESS(WdfIoQueueRetrieveFoundRequest(Extension->PendingQueue, foundRequest, &returnedRequest)))
 			WdfRequestForwardToIoQueue(returnedRequest, WdfDeviceGetDefaultQueue(WdfIoQueueGetDevice(Extension->PendingQueue)));
-		}
 
 		WdfObjectDereference(foundRequest);
 	}
 
 	KeReleaseSpinLock(&Extension->PendingSpinLock, irql);
-	if (!NT_SUCCESS(IoAcquireRemoveLock(&Extension->PendingRemoveLock, Extension)))
-		__debugbreak();
 
 	DEBUG_EXIT_FUNCTION_VOID();
 	return;
@@ -173,7 +170,7 @@ static NTSTATUS _RemDiskXXXCrypt(PREMDISK_DEVICE_EXTENSION Extension, BOOLEAN En
 	PUCHAR buffer = NULL;
 	SIZE_T chunkSize = 0;
 	NTSTATUS status = STATUS_UNSUCCESSFUL;
-	DEBUG_ENTER_FUNCTION("Extension=0x%p", Extension);
+	DEBUG_ENTER_FUNCTION("Extension=0x%p; Encrypt=%u", Extension, Encrypt);
 
 	chunkSize = Extension->MaxTransferLength;
 	buffer = (PUCHAR)ExAllocatePoolWithTag(NonPagedPool, chunkSize, RAMDISK_TAG);
@@ -511,7 +508,6 @@ NTSTATUS RemDiskEtvDeviceAdd(WDFDRIVER Driver, PWDFDEVICE_INIT DeviceInit)
 	DEBUG_IRQL_LESS_OR_EQUAL(APC_LEVEL);
 
 	pdo = WdfFdoInitWdmGetPhysicalDevice(DeviceInit);
-	DEBUG_PRINT_LOCATION("WdfFdoInitWdmGetPhysicalDevice(-): 0x%p", pdo);
 	if (pdo == NULL) {
 		status = STATUS_NOT_FOUND;
 		goto Cleanup;
@@ -553,8 +549,6 @@ NTSTATUS RemDiskEtvDeviceAdd(WDFDRIVER Driver, PWDFDEVICE_INIT DeviceInit)
 	if (!NT_SUCCESS(status))
 		goto Cleanup;
 
-
-
 	WDF_DEVICE_POWER_POLICY_IDLE_SETTINGS_INIT(&idleSettings, IdleCannotWakeFromS0);
 	idleSettings.IdleTimeout = 1000; // 1-sec
 	status = WdfDeviceAssignS0IdleSettings(hFDO, &idleSettings);
@@ -569,9 +563,9 @@ NTSTATUS RemDiskEtvDeviceAdd(WDFDRIVER Driver, PWDFDEVICE_INIT DeviceInit)
 	pDeviceExtension->Type = diskInfo->Type;
 	pDeviceExtension->MaxTransferLength = diskInfo->MaxTranfserLength;
 	pDeviceExtension->Flags = diskInfo->Flags;
+	_ComputeDriverGeometry(pDeviceExtension, diskInfo);
 	WdfDeviceSetAlignmentRequirement(hFDO, pDeviceExtension->DiskGeometry.BytesPerSector);
 
-	_ComputeDriverGeometry(pDeviceExtension, diskInfo);
 	KeInitializeSpinLock(&pDeviceExtension->PendingSpinLock);
 	IoInitializeRemoveLock(&pDeviceExtension->PendingRemoveLock, 0, 0, 0);
 	status = IoAcquireRemoveLock(&pDeviceExtension->PendingRemoveLock, pDeviceExtension);
