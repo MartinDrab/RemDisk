@@ -3,6 +3,7 @@ __history
 *.identcache
 .vs
 *.user
+*.stat
 bin
 lib
 tmp
