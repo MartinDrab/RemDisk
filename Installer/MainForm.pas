@@ -19,6 +19,20 @@ type
     CancelButton: TButton;
     NextButton: TButton;
     BackButton: TButton;
+    RepairRadioButton: TRadioButton;
+    RemoveRadioButton: TRadioButton;
+    DirectoryEdit: TEdit;
+    BrowseButton: TButton;
+    StartMenuCheckBox: TCheckBox;
+    ShortcutCheckBox: TCheckBox;
+    AllUsersCheckBox: TCheckBox;
+    DirectoryOpenDialog: TOpenDialog;
+    LocationLabel: TLabel;
+    InstallProgressBar: TProgressBar;
+    OperationListBox: TListBox;
+    SuccessPanel: TPanel;
+    FailurePanel: TPanel;
+    WelcomePanel: TPanel;
   private
     { Private declarations }
   public
