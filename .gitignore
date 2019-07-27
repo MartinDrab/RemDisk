@@ -1,6 +1,8 @@
+__history
+*.local
+*.identcache
+.vs
+*.user
 bin
 lib
 tmp
-/RemBus/RemBus.vcxproj.user
-/.vs/remdisk/v14/.suo
-/RemDiskDrv/RemDiskDrv.vcxproj.user
