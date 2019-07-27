@@ -125,7 +125,7 @@ If Result = ERROR_SUCCESS Then
       end;
     end;
 
-  If Assigned(FDisplayer) Then
+  If Assigned(Displayer) Then
     begin
     Displayer.Items.Count := FDiskList.Count;
     Displayer.Invalidate;
