@@ -214,6 +214,86 @@ object Form1: TForm1
         ExplicitHeight = 89
       end
     end
+    object LicenseTabSheet: TTabSheet
+      Caption = 'License'
+      ImageIndex = 6
+      object AgreePanel: TPanel
+        Left = 0
+        Top = 200
+        Width = 385
+        Height = 29
+        Align = alBottom
+        TabOrder = 0
+        object AgreeSheckBox: TCheckBox
+          Left = 8
+          Top = 2
+          Width = 89
+          Height = 17
+          Caption = 'I agree'
+          TabOrder = 0
+        end
+      end
+      object LicenseRichEdit: TRichEdit
+        Left = 0
+        Top = 0
+        Width = 385
+        Height = 200
+        Align = alClient
+        Font.Charset = EASTEUROPE_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        Lines.Strings = (
+          'MIT License'
+          ''
+          'Copyright (c) 2016-2019 Martin Dr'#225'b'
+          ''
+          
+            'Permission is hereby granted, free of charge, to any person obta' +
+            'ining a '
+          'copy'
+          
+            'of this software and associated documentation files (the "Softwa' +
+            're"), to '
+          'deal'
+          
+            'in the Software without restriction, including without limitatio' +
+            'n the rights'
+          
+            'to use, copy, modify, merge, publish, distribute, sublicense, an' +
+            'd/or sell'
+          
+            'copies of the Software, and to permit persons to whom the Softwa' +
+            're is'
+          'furnished to do so, subject to the following conditions:'
+          ''
+          
+            'The above copyright notice and this permission notice shall be i' +
+            'ncluded in all'
+          'copies or substantial portions of the Software.'
+          ''
+          'THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY '
+          'KIND, EXPRESS OR'
+          'IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF '
+          'MERCHANTABILITY,'
+          'FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO '
+          'EVENT SHALL THE'
+          'AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, '
+          'DAMAGES OR OTHER'
+          'LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR '
+          'OTHERWISE, ARISING FROM,'
+          'OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR '
+          'OTHER DEALINGS IN THE'
+          'SOFTWARE.')
+        ParentFont = False
+        PlainText = True
+        ReadOnly = True
+        ScrollBars = ssVertical
+        TabOrder = 1
+        Zoom = 100
+      end
+    end
   end
   object DirectoryOpenDialog: TOpenDialog
     Left = 252

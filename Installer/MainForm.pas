@@ -33,6 +33,10 @@ type
     SuccessPanel: TPanel;
     FailurePanel: TPanel;
     WelcomePanel: TPanel;
+    LicenseTabSheet: TTabSheet;
+    AgreePanel: TPanel;
+    AgreeSheckBox: TCheckBox;
+    LicenseRichEdit: TRichEdit;
   private
     { Private declarations }
   public
