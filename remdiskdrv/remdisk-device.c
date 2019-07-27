@@ -719,7 +719,6 @@ VOID RemDiskEvtIoInternalDeviceControl(IN WDFQUEUE Queue, IN WDFREQUEST Request,
 			WDFDEVICE device = WdfIoQueueGetDevice(Queue);
 			PDEVICE_OBJECT wdmDevice = WdfDeviceWdmGetDeviceObject(device);
 
-			DbgPrintEx(DPFLTR_DEFAULT_ID, DPFLTR_ERROR_LEVEL, "IOCTL_DISK_INTERNAL_SET_VERIFY\n");
 			if (WdfRequestGetRequestorMode(Request) == KernelMode) {
 				wdmDevice->Flags |= DO_VERIFY_VOLUME;
 				status = STATUS_SUCCESS;
@@ -729,14 +728,12 @@ VOID RemDiskEvtIoInternalDeviceControl(IN WDFQUEUE Queue, IN WDFREQUEST Request,
 			WDFDEVICE device = WdfIoQueueGetDevice(Queue);
 			PDEVICE_OBJECT wdmDevice = WdfDeviceWdmGetDeviceObject(device);
 
-			DbgPrintEx(DPFLTR_DEFAULT_ID, DPFLTR_ERROR_LEVEL, "IOCTL_DISK_INTERNAL_CLEAR_VERIFY\n");
 			if (WdfRequestGetRequestorMode(Request) == KernelMode) {
 				wdmDevice->Flags &= (~DO_VERIFY_VOLUME);
 				status = STATUS_SUCCESS;
 			}
 		} break;
 		default:
-			DbgPrintEx(DPFLTR_DEFAULT_ID, DPFLTR_ERROR_LEVEL, "Internal IOCTL: 0x%x\n", IoControlCode);
 			status = STATUS_INVALID_DEVICE_REQUEST;
 			break;
 	}
@@ -760,13 +757,9 @@ VOID RemDiskEvtIoDeviceControl(IN WDFQUEUE Queue, IN WDFREQUEST Request, IN size
 	UNREFERENCED_PARAMETER(InputBufferLength);
 
 	switch (IoControlCode) {
-	case 0x41018: {
-		DbgPrintEx(DPFLTR_DEFAULT_ID, DPFLTR_ERROR_LEVEL, "IOCTL_SCSI_GET_ADDRESS\n");
-	} break;
 	case IOCTL_STORAGE_GET_HOTPLUG_INFO: {
 		PSTORAGE_HOTPLUG_INFO outputBuffer = NULL;
 
-		DbgPrintEx(DPFLTR_DEFAULT_ID, DPFLTR_ERROR_LEVEL, "IOCTL_STORAGE_GET_HOTPLUG_INFO\n");
 		information = sizeof(STORAGE_HOTPLUG_INFO);
 		status = WdfRequestRetrieveOutputBuffer(Request, sizeof(STORAGE_HOTPLUG_INFO), &outputBuffer, &bufSize);
 		if (NT_SUCCESS(status)) {
@@ -781,21 +774,16 @@ VOID RemDiskEvtIoDeviceControl(IN WDFQUEUE Queue, IN WDFREQUEST Request, IN size
 	case SMART_GET_VERSION: {
 		PGETVERSIONINPARAMS outputBuffer = NULL;
 
-		DbgPrintEx(DPFLTR_DEFAULT_ID, DPFLTR_ERROR_LEVEL, "SMART_GET_VERSION\n");
 		information = sizeof(GETVERSIONINPARAMS);
 		status = WdfRequestRetrieveOutputBuffer(Request, sizeof(GETVERSIONINPARAMS), &outputBuffer, &bufSize);
 		if (NT_SUCCESS(status)) {
 			RtlZeroMemory(outputBuffer, information);
 		}
 	} break;
-	case IOCTL_STORAGE_EJECT_MEDIA: {
-		DbgPrintEx(DPFLTR_DEFAULT_ID, DPFLTR_ERROR_LEVEL, "IOCTL_STORAGE_EJECT_MEDIA\n");
-	} break;
 	case IOCTL_STORAGE_MEDIA_REMOVAL:
 	case IOCTL_DISK_MEDIA_REMOVAL: {
 		PBOOLEAN inputBuffer = NULL;
 		
-		DbgPrintEx(DPFLTR_DEFAULT_ID, DPFLTR_ERROR_LEVEL, "IOCTL_DISK_MEDIA_REMOVAL\n");
 		information = sizeof(BOOLEAN);
 		status = WdfRequestRetrieveInputBuffer(Request, information, &inputBuffer, &bufSize);
 		if (NT_SUCCESS(status))
@@ -804,7 +792,6 @@ VOID RemDiskEvtIoDeviceControl(IN WDFQUEUE Queue, IN WDFREQUEST Request, IN size
 	case IOCTL_STORAGE_GET_DEVICE_NUMBER: {
 		PSTORAGE_DEVICE_NUMBER outputBuffer = NULL;
 
-		DbgPrintEx(DPFLTR_DEFAULT_ID, DPFLTR_ERROR_LEVEL, "IOCTL_STORAGE_GET_DEVICE_NUMBER\n");
 		information = sizeof(STORAGE_DEVICE_NUMBER);
 		status = WdfRequestRetrieveOutputBuffer(Request, sizeof(STORAGE_DEVICE_NUMBER), &outputBuffer, &bufSize);
 		if (NT_SUCCESS(status)) {
@@ -817,7 +804,6 @@ VOID RemDiskEvtIoDeviceControl(IN WDFQUEUE Queue, IN WDFREQUEST Request, IN size
 	case IOCTL_DISK_GET_LENGTH_INFO: {
 		PGET_LENGTH_INFORMATION outputBuffer = NULL;
 
-		DbgPrintEx(DPFLTR_DEFAULT_ID, DPFLTR_ERROR_LEVEL, "IOCTL_DISK_GET_LENGTH_INFO\n");
 		information = sizeof(GET_LENGTH_INFORMATION);
 		status = WdfRequestRetrieveOutputBuffer(Request, sizeof(GET_LENGTH_INFORMATION), &outputBuffer, &bufSize);
 		if (NT_SUCCESS(status)) {
@@ -828,7 +814,6 @@ VOID RemDiskEvtIoDeviceControl(IN WDFQUEUE Queue, IN WDFREQUEST Request, IN size
 	case IOCTL_STORAGE_READ_CAPACITY: {
 		PSTORAGE_READ_CAPACITY outputBuffer = NULL;
 
-		DbgPrintEx(DPFLTR_DEFAULT_ID, DPFLTR_ERROR_LEVEL, "IOCTL_STORAGE_READ_CAPACITY\n");
 		information = sizeof(STORAGE_READ_CAPACITY);
 		status = WdfRequestRetrieveOutputBuffer(Request, sizeof(STORAGE_READ_CAPACITY), &outputBuffer, &bufSize);
 		if (NT_SUCCESS(status)) {
@@ -840,13 +825,11 @@ VOID RemDiskEvtIoDeviceControl(IN WDFQUEUE Queue, IN WDFREQUEST Request, IN size
 		}
 	} break;
 	case IOCTL_DISK_UPDATE_PROPERTIES: {
-		DbgPrintEx(DPFLTR_DEFAULT_ID, DPFLTR_ERROR_LEVEL, "IOCTL_DISK_UPDATE_PROPERTIES\n");
 		status = STATUS_SUCCESS;
 	} break;
 	case IOCTL_DISK_GET_DISK_ATTRIBUTES: {
 		PGET_DISK_ATTRIBUTES outputBuffer = NULL;
 
-		DbgPrintEx(DPFLTR_DEFAULT_ID, DPFLTR_ERROR_LEVEL, "IOCTL_DISK_GET_DISK_ATTRIBUTES\n");
 		information = sizeof(GET_DISK_ATTRIBUTES);
 		status = WdfRequestRetrieveOutputBuffer(Request, information, &outputBuffer, &bufSize);
 		if (NT_SUCCESS(status)) {
@@ -862,7 +845,6 @@ VOID RemDiskEvtIoDeviceControl(IN WDFQUEUE Queue, IN WDFREQUEST Request, IN size
 	case IOCTL_DISK_SET_DISK_ATTRIBUTES: {
 		PSET_DISK_ATTRIBUTES inputBuffer = NULL;
 
-		DbgPrintEx(DPFLTR_DEFAULT_ID, DPFLTR_ERROR_LEVEL, "IOCTL_DISK_SET_DISK_ATTRIBUTES\n");
 		status = WdfRequestRetrieveInputBuffer(Request, sizeof(SET_DISK_ATTRIBUTES), &inputBuffer, &bufSize);
 		if (NT_SUCCESS(status)) {
 			if (inputBuffer->Version == sizeof(SET_DISK_ATTRIBUTES)) {
@@ -886,11 +868,9 @@ VOID RemDiskEvtIoDeviceControl(IN WDFQUEUE Queue, IN WDFREQUEST Request, IN size
 	case IOCTL_STORAGE_QUERY_PROPERTY: {
 		PSTORAGE_PROPERTY_QUERY inputBuffer = NULL;
 
-		DbgPrintEx(DPFLTR_DEFAULT_ID, DPFLTR_ERROR_LEVEL, "IOCTL_STORAGE_QUERY_PROPERTY\n");
 		status = WdfRequestRetrieveInputBuffer(Request, sizeof(STORAGE_PROPERTY_QUERY), &inputBuffer, &bufSize);
 		if (NT_SUCCESS(status)) {
 			status = STATUS_INVALID_DEVICE_REQUEST;
-			DbgPrintEx(DPFLTR_DEFAULT_ID, DPFLTR_ERROR_LEVEL, "Property ID: %u Query type: %u\n", inputBuffer->PropertyId, inputBuffer->QueryType);
 			switch (inputBuffer->PropertyId) {
 			case StorageDeviceProperty: {
 				if (inputBuffer->QueryType == PropertyStandardQuery) {
@@ -987,7 +967,6 @@ VOID RemDiskEvtIoDeviceControl(IN WDFQUEUE Queue, IN WDFREQUEST Request, IN size
 	case IOCTL_DISK_GET_DRIVE_GEOMETRY_EX:  {
 		PDISK_GEOMETRY_EX outputBuffer = NULL;
 
-		DbgPrintEx(DPFLTR_DEFAULT_ID, DPFLTR_ERROR_LEVEL, "IOCTL_DISK_GET_DRIVE_GEOMETRY_EX\n");
 		information = sizeof(DISK_GEOMETRY_EX);
 		status = WdfRequestRetrieveOutputBuffer(Request, sizeof(DISK_GEOMETRY_EX), &outputBuffer, &bufSize);
 		if (NT_SUCCESS(status)) {
@@ -1000,7 +979,6 @@ VOID RemDiskEvtIoDeviceControl(IN WDFQUEUE Queue, IN WDFREQUEST Request, IN size
 	case IOCTL_DISK_GET_DRIVE_GEOMETRY:  {
 		PDISK_GEOMETRY outputBuffer;
 
-		DbgPrintEx(DPFLTR_DEFAULT_ID, DPFLTR_ERROR_LEVEL, "IOCTL_DISK_GET_DRIVE_GEOMETRY\n");
 		information = sizeof(DISK_GEOMETRY);
 		status = WdfRequestRetrieveOutputBuffer(Request, sizeof(DISK_GEOMETRY), &outputBuffer, &bufSize);
 		if (NT_SUCCESS(status)) {
@@ -1013,7 +991,6 @@ VOID RemDiskEvtIoDeviceControl(IN WDFQUEUE Queue, IN WDFREQUEST Request, IN size
 	case IOCTL_STORAGE_CHECK_VERIFY2: {
 		PULONG outputBuffer = NULL;
 
-		DbgPrintEx(DPFLTR_DEFAULT_ID, DPFLTR_ERROR_LEVEL, "IOCTL_STORAGE_CHECK_VERIFY\n");
 		if (OutputBufferLength >= sizeof(ULONG)) {
 			status = WdfRequestRetrieveOutputBuffer(Request, sizeof(ULONG), &outputBuffer, &bufSize);
 			if (NT_SUCCESS(status)) {
@@ -1024,23 +1001,11 @@ VOID RemDiskEvtIoDeviceControl(IN WDFQUEUE Queue, IN WDFREQUEST Request, IN size
 		} else status = STATUS_SUCCESS;
 	} break;
 	case IOCTL_DISK_IS_WRITABLE:
-		DbgPrintEx(DPFLTR_DEFAULT_ID, DPFLTR_ERROR_LEVEL, "IOCTL_DISK_IS_WRITABLE\n");
 		status = (FlagOn(REMDISK_FLAG_WRITABLE, devExt->Flags)) ? STATUS_SUCCESS : STATUS_MEDIA_WRITE_PROTECTED;
-		break;
-	case IOCTL_STORAGE_GET_MEDIA_TYPES:
-	case IOCTL_DISK_GET_MEDIA_TYPES: {
-		DbgPrintEx(DPFLTR_DEFAULT_ID, DPFLTR_ERROR_LEVEL, "IOCTL_DISK_GET_MEDIA_TYPES\n", IoControlCode);
-	} break;
-	case IOCTL_STORAGE_GET_MEDIA_TYPES_EX: {
-		DbgPrintEx(DPFLTR_DEFAULT_ID, DPFLTR_ERROR_LEVEL, "IOCTL_STORAGE_GET_MEDIA_TYPES_EX\n", IoControlCode);
-	} break;
-	case IOCTL_STORAGE_MANAGE_DATA_SET_ATTRIBUTES:
-		DbgPrintEx(DPFLTR_DEFAULT_ID, DPFLTR_ERROR_LEVEL, "IOCTL_STORAGE_MANAGE_DATA_SET_ATTRIBUTES\n", IoControlCode);
 		break;
 	case IOCTL_DISK_COPY_DATA: {
 		PDISK_COPY_DATA_PARAMETERS inputBuffer = NULL;
 
-		DbgPrintEx(DPFLTR_DEFAULT_ID, DPFLTR_ERROR_LEVEL, "IOCTL_DISK_COPY_DATA\n");
 		status = WdfRequestRetrieveInputBuffer(Request, sizeof(DISK_COPY_DATA_PARAMETERS), &inputBuffer, &bufSize);
 		if (NT_SUCCESS(status)) {
 			if (FlagOn(REMDISK_FLAG_WRITABLE, devExt->Flags)) {
@@ -1084,15 +1049,6 @@ VOID RemDiskEvtIoDeviceControl(IN WDFQUEUE Queue, IN WDFREQUEST Request, IN size
 			} else status = STATUS_MEDIA_WRITE_PROTECTED;
 		}
 	} break;
-	case 0x66001b: // Undocumented FTDISK (SW RAID)
-		DbgPrintEx(DPFLTR_DEFAULT_ID, DPFLTR_ERROR_LEVEL, "0x66001b\n", IoControlCode);
-		break;
-	case 0x2d518c:
-		DbgPrintEx(DPFLTR_DEFAULT_ID, DPFLTR_ERROR_LEVEL, "0x2d518c\n", IoControlCode);
-		break;
-	case 0x2d5190:
-		DbgPrintEx(DPFLTR_DEFAULT_ID, DPFLTR_ERROR_LEVEL, "0x2d5190\n", IoControlCode);
-		break;
 	default:
 		DbgPrintEx(DPFLTR_DEFAULT_ID, DPFLTR_ERROR_LEVEL, "IOCTL: 0x%x\n", IoControlCode);
 		break;
