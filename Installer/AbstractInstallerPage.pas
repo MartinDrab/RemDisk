@@ -36,9 +36,9 @@ Type
     Constructor Create(AOnSelected:TOnInstallerPageSelected; AOnChanged:TOnInstallerPageChanged; AContext:Pointer); Reintroduce;
     Procedure SetTargets(ANext:TAbstractInstallerPage; APrevious:TAbstractInstallerPage; ACancel:TAbstractInstallerPage);
 
-    Function NextPressed : Boolean; Virtual; Abstract;
-    Function PreviousPressed : Boolean; Virtual; Abstract;
-    Function CancelPressed : Boolean; Virtual; Abstract;
+    Function NextPressed : Boolean; Virtual;
+    Function PreviousPressed : Boolean; Virtual;
+    Function CancelPressed : Boolean; Virtual;
     Function Skip : Boolean; Virtual;
 
     Property NextButton : TInstallerPageSwitchingButton Read GetNextButton;
@@ -122,6 +122,26 @@ FPrevious := APrevious;
 FCancelPage := ACancel;
 end;
 
+Function TAbstractInstallerPage.NextPressed:Boolean;
+begin
+Result := Assigned(FNext);
+If Result Then
+  GoNext;
+end;
+
+Function TAbstractInstallerPage.PreviousPressed:Boolean;
+begin
+Result := Assigned(FPrevious);
+If Result Then
+  GoPrevious;
+end;
+
+Function TAbstractInstallerPage.CancelPressed:Boolean;
+begin
+Result := Assigned(FCancelPage);
+If Result Then
+  GoCancel;
+end;
 
 
 End.
