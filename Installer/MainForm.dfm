@@ -11,6 +11,8 @@ object Form1: TForm1
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
   object StepPanel: TPanel
@@ -27,6 +29,7 @@ object Form1: TForm1
       Height = 31
       Caption = 'Cancel'
       TabOrder = 0
+      OnClick = CancelButtonClick
     end
     object NextButton: TButton
       Left = 265
@@ -35,6 +38,7 @@ object Form1: TForm1
       Height = 31
       Caption = 'Next >'
       TabOrder = 1
+      OnClick = NextButtonClick
     end
     object BackButton: TButton
       Left = 202
@@ -43,6 +47,7 @@ object Form1: TForm1
       Height = 31
       Caption = '< Back'
       TabOrder = 2
+      OnClick = BackButtonClick
     end
   end
   object PagesPageControl: TPageControl
@@ -55,10 +60,6 @@ object Form1: TForm1
     TabOrder = 1
     object ActionTabSheet: TTabSheet
       Caption = 'Action'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object RepairRadioButton: TRadioButton
         Left = 32
         Top = 17
@@ -91,10 +92,6 @@ object Form1: TForm1
     object SettingsTabSheet: TTabSheet
       Caption = 'Settings'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object LocationLabel: TLabel
         Left = 18
         Top = 67
@@ -152,9 +149,6 @@ object Form1: TForm1
         Height = 25
         Align = alTop
         TabOrder = 0
-        ExplicitLeft = 80
-        ExplicitTop = 56
-        ExplicitWidth = 121
       end
       object OperationListBox: TListBox
         Left = 0
@@ -169,10 +163,6 @@ object Form1: TForm1
     object SuccessTabSheet: TTabSheet
       Caption = 'Success'
       ImageIndex = 3
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object SuccessPanel: TPanel
         Left = 0
         Top = 0
@@ -181,19 +171,11 @@ object Form1: TForm1
         Align = alClient
         Caption = 'Success'
         TabOrder = 0
-        ExplicitLeft = 80
-        ExplicitTop = 88
-        ExplicitWidth = 113
-        ExplicitHeight = 89
       end
     end
     object FailureTabSheet: TTabSheet
       Caption = 'Failure'
       ImageIndex = 4
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object FailurePanel: TPanel
         Left = 0
         Top = 0
@@ -202,10 +184,6 @@ object Form1: TForm1
         Align = alClient
         Caption = 'Failure'
         TabOrder = 0
-        ExplicitLeft = 80
-        ExplicitTop = 88
-        ExplicitWidth = 113
-        ExplicitHeight = 89
       end
     end
     object InitialTabSheet: TTabSheet
