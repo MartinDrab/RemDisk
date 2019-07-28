@@ -20,7 +20,6 @@ object Form1: TForm1
     Height = 36
     Align = alBottom
     TabOrder = 0
-    ExplicitTop = 208
     object CancelButton: TButton
       Left = 328
       Top = 2
@@ -56,6 +55,10 @@ object Form1: TForm1
     TabOrder = 1
     object ActionTabSheet: TTabSheet
       Caption = 'Action'
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object RepairRadioButton: TRadioButton
         Left = 32
         Top = 17
@@ -88,6 +91,10 @@ object Form1: TForm1
     object SettingsTabSheet: TTabSheet
       Caption = 'Settings'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object LocationLabel: TLabel
         Left = 18
         Top = 67
@@ -157,15 +164,15 @@ object Form1: TForm1
         Align = alClient
         ItemHeight = 13
         TabOrder = 1
-        ExplicitLeft = 72
-        ExplicitTop = 72
-        ExplicitWidth = 145
-        ExplicitHeight = 73
       end
     end
     object SuccessTabSheet: TTabSheet
       Caption = 'Success'
       ImageIndex = 3
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object SuccessPanel: TPanel
         Left = 0
         Top = 0
@@ -183,6 +190,10 @@ object Form1: TForm1
     object FailureTabSheet: TTabSheet
       Caption = 'Failure'
       ImageIndex = 4
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object FailurePanel: TPanel
         Left = 0
         Top = 0
@@ -208,10 +219,6 @@ object Form1: TForm1
         Align = alClient
         Caption = 'Welcome'
         TabOrder = 0
-        ExplicitLeft = 112
-        ExplicitTop = 72
-        ExplicitWidth = 137
-        ExplicitHeight = 89
       end
     end
     object LicenseTabSheet: TTabSheet

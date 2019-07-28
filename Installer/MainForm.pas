@@ -1,13 +1,15 @@
-unit MainForm;
+Unit MainForm;
 
-interface
+Interface
 
-uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.StdCtrls;
+Uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
+  Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.StdCtrls,
+  AbstractInstallerPage;
 
-type
-  TForm1 = class(TForm)
+Type
+  TForm1 = Class (TForm)
     StepPanel: TPanel;
     PagesPageControl: TPageControl;
     ActionTabSheet: TTabSheet;
@@ -37,17 +39,26 @@ type
     AgreePanel: TPanel;
     AgreeSheckBox: TCheckBox;
     LicenseRichEdit: TRichEdit;
-  private
-    { Private declarations }
-  public
-    { Public declarations }
+  Private
+    Procedure OnPageSelectedChanged(APage:TAbstractInstallerPage);
   end;
 
-var
+Var
   Form1: TForm1;
 
-implementation
+Implementation
 
-{$R *.dfm}
+{$R *.DFM}
 
-end.
+Procedure TForm1.OnPageSelectedChanged(APage:TAbstractInstallerPage);
+begin
+CancelButton.Caption := APage.CancelButton.Caption;
+CancelButton.Enabled := APage.CancelButton.Enabled;
+BackButton.Caption := APage.PreviousButton.Caption;
+BackButton.Enabled := APage.PreviousButton.Enabled;
+NextButton.Caption := APage.NextButton.Caption;
+NextButton.Enabled := APage.NextButton.Enabled;
+end;
+
+End.
+
