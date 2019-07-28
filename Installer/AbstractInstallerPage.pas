@@ -70,7 +70,7 @@ end;
 
 Procedure TAbstractInstallerPage.GoCancel;
 begin
-FOnSelected(FPrevious);
+FOnSelected(FCancelPage);
 end;
 
 Procedure TAbstractInstallerPage.ReportChange;
