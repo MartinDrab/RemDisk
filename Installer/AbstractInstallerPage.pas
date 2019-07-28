@@ -59,13 +59,27 @@ FContext := AContext;
 end;
 
 Procedure TAbstractInstallerPage.GoNext;
+Var
+  p : TAbstractInstallerPage;
 begin
-FOnSelected(FNext);
+p := FNext;
+While (Assigned(p)) ANd (p.Skip) Do
+  p := p.FNext;
+
+If Assigned(p) Then
+  FOnSelected(p);
 end;
 
 Procedure TAbstractInstallerPage.GoPrevious;
+Var
+  p : TAbstractInstallerPage;
 begin
-FOnSelected(FPrevious);
+p := FPrevious;
+While (Assigned(p)) ANd (p.Skip) Do
+  p := p.FPrevious;
+
+If Assigned(p) Then
+  FOnSelected(p);
 end;
 
 Procedure TAbstractInstallerPage.GoCancel;
