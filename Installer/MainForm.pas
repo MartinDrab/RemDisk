@@ -72,7 +72,8 @@ end;
 
 Procedure TForm1.CancelButtonClick(Sender: TObject);
 begin
-FCurrentPage.CancelPressed;
+If MessageDlg('Do you really wish to exit the setup?', mtWarning, [mbYes, mbNo], 0, mbNo) = mrYes Then
+  FCurrentPage.CancelPressed;
 end;
 
 Procedure TForm1.FormCreate(Sender: TObject);
