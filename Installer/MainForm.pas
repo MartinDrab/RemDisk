@@ -124,8 +124,11 @@ FCurrentPage.NextPressed;
 end;
 
 Procedure TForm1.OnPageSelectedChanged(APage:TAbstractInstallerPage);
+Var
+  instSettings : TInstallerSettings;
 begin
 FCurrentPage := APage;
+instSettings := FCurrentPage.InstallerSettings;
 PagesPageControl.ActivePage := TTabSheet(FCurrentPage.Context);
 CancelButton.Caption := APage.CancelButton.Caption;
 CancelButton.Enabled := APage.CancelButton.Enabled;
@@ -133,6 +136,13 @@ BackButton.Caption := APage.PreviousButton.Caption;
 BackButton.Enabled := APage.PreviousButton.Enabled;
 NextButton.Caption := APage.NextButton.Caption;
 NextButton.Enabled := APage.NextButton.Enabled;
+If FCurrentPage = FSettingsPage Then
+  begin
+  DirectoryEdit.Text := instSettings.ProgramDirectory;
+  StartMenuCheckBox.Checked := instSettings.StartMenu;
+  ShortcutCheckBox.Checked := instSettings.DesktopShortcut;
+  AllUsersCheckBox.Checked := instSettings.AllUsers;
+  end;
 end;
 
 End.
