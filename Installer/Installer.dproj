@@ -92,6 +92,8 @@
         <AppExecutionLevel>requireAdministrator</AppExecutionLevel>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
         <AppExecutionLevelUIAccess>true</AppExecutionLevelUIAccess>
+        <DCC_ExeOutput>..\bin\x64\$(Config)</DCC_ExeOutput>
+        <DCC_DcuOutput>..\tmp\Installer\x64\$(Config)</DCC_DcuOutput>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
