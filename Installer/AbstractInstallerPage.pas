@@ -3,7 +3,7 @@ Unit AbstractInstallerPage;
 Interface
 
 Uses
-  Windows;
+  Windows, InstallerSettings;
 
 Type
   TAbstractInstallerPage = Class;
@@ -18,6 +18,7 @@ Type
 
   TAbstractInstallerPage = Class
   Private
+    FInstallerSettings : TInstallerSettings;
     FOnSelected : TOnInstallerPageSelected;
     FOnChanged : TOnInstallerPageChanged;
     FNext : TAbstractInstallerPage;
@@ -33,7 +34,7 @@ Type
     Function GetPreviousButton:TInstallerPageSwitchingButton; Virtual;
     Function GetCancelButton:TInstallerPageSwitchingButton; Virtual;
   Public
-    Constructor Create(AOnSelected:TOnInstallerPageSelected; AOnChanged:TOnInstallerPageChanged; AContext:Pointer); Reintroduce;
+    Constructor Create(AInstallerSettings:TInstallerSettings; AOnSelected:TOnInstallerPageSelected; AOnChanged:TOnInstallerPageChanged; AContext:Pointer); Reintroduce;
     Procedure SetTargets(ANext:TAbstractInstallerPage; APrevious:TAbstractInstallerPage; ACancel:TAbstractInstallerPage);
 
     Function NextPressed : Boolean; Virtual;
@@ -45,17 +46,19 @@ Type
     Property PreviousButton : TInstallerPageSwitchingButton Read GetPreviousButton;
     Property CancelButton : TInstallerPageSwitchingButton Read GetCancelButton;
     Property Context : Pointer Read FContext;
+    Property InstallerSettings : TInstallerSettings Read FInstallerSettings;
   end;
 
 
 Implementation
 
-Constructor TAbstractInstallerPage.Create(AOnSelected:TOnInstallerPageSelected; AOnChanged:TOnInstallerPageChanged; AContext:Pointer);
+Constructor TAbstractInstallerPage.Create(AInstallerSettings:TInstallerSettings; AOnSelected:TOnInstallerPageSelected; AOnChanged:TOnInstallerPageChanged; AContext:Pointer);
 begin
 Inherited Create;
 FOnSelected := AOnSelected;
 FOnChanged := AOnChanged;
 FContext := AContext;
+FInstallerSettings := AInstallerSettings;
 end;
 
 Procedure TAbstractInstallerPage.GoNext;

@@ -156,6 +156,7 @@
         </DCCReference>
         <DCCReference Include="AbstractInstallerPage.pas"/>
         <DCCReference Include="LicenseInstallerPage.pas"/>
+        <DCCReference Include="InstallerSettings.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

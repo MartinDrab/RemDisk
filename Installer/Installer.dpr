@@ -4,7 +4,8 @@ uses
   Vcl.Forms,
   MainForm in 'MainForm.pas' {Form1},
   AbstractInstallerPage in 'AbstractInstallerPage.pas',
-  LicenseInstallerPage in 'LicenseInstallerPage.pas';
+  LicenseInstallerPage in 'LicenseInstallerPage.pas',
+  InstallerSettings in 'InstallerSettings.pas';
 
 {$R *.res}
 

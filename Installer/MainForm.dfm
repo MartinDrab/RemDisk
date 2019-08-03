@@ -55,7 +55,7 @@ object Form1: TForm1
     Top = 0
     Width = 393
     Height = 257
-    ActivePage = LicenseTabSheet
+    ActivePage = SettingsTabSheet
     Align = alClient
     TabOrder = 1
     object ActionTabSheet: TTabSheet

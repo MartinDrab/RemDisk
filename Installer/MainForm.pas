@@ -64,6 +64,9 @@ Var
 
 Implementation
 
+Uses
+  InstallerSettings;
+
 {$R *.DFM}
 
 Procedure TForm1.AgreeSheckBoxClick(Sender: TObject);
@@ -83,14 +86,17 @@ If MessageDlg('Do you really wish to exit the setup?', mtWarning, [mbYes, mbNo],
 end;
 
 Procedure TForm1.FormCreate(Sender: TObject);
+Var
+  instSettings : TInstallerSettings;
 begin
-FInitialPage := TAbstractInstallerPage.Create(OnPageSelectedChanged, OnPageSelectedChanged, InitialTabSheet);
-FActionPage := TAbstractInstallerPage.Create(OnPageSelectedChanged, OnPageSelectedChanged, ActionTabSheet);
-FLicensePage := TLicenseInstallerPage.Create(OnPageSelectedChanged, OnPageSelectedChanged, LicenseTabSheet);
-FSettingsPage := TAbstractInstallerPage.Create(OnPageSelectedChanged, OnPageSelectedChanged, SettingsTabSheet);
-FProgressPage := TAbstractInstallerPage.Create(OnPageSelectedChanged, OnPageSelectedChanged, ProgressTabSheet);
-FSuccessPage := TAbstractInstallerPage.Create(OnPageSelectedChanged, OnPageSelectedChanged, SuccessTabSheet);
-FFailurePage := TAbstractInstallerPage.Create(OnPageSelectedChanged, OnPageSelectedChanged, FailureTabSheet);
+instSettings := TInstallerSettings.Create;
+FInitialPage := TAbstractInstallerPage.Create(instSettings, OnPageSelectedChanged, OnPageSelectedChanged, InitialTabSheet);
+FActionPage := TAbstractInstallerPage.Create(instSettings, OnPageSelectedChanged, OnPageSelectedChanged, ActionTabSheet);
+FLicensePage := TLicenseInstallerPage.Create(instSettings, OnPageSelectedChanged, OnPageSelectedChanged, LicenseTabSheet);
+FSettingsPage := TAbstractInstallerPage.Create(instSettings, OnPageSelectedChanged, OnPageSelectedChanged, SettingsTabSheet);
+FProgressPage := TAbstractInstallerPage.Create(instSettings, OnPageSelectedChanged, OnPageSelectedChanged, ProgressTabSheet);
+FSuccessPage := TAbstractInstallerPage.Create(instSettings, OnPageSelectedChanged, OnPageSelectedChanged, SuccessTabSheet);
+FFailurePage := TAbstractInstallerPage.Create(instSettings, OnPageSelectedChanged, OnPageSelectedChanged, FailureTabSheet);
 
 FInitialPage.SetTargets(FActionPage, Nil, FFailurePage);
 FActionPage.SetTargets(FLicensePage, FInitialPage, FFailurePage);
