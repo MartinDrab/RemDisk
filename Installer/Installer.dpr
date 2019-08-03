@@ -3,7 +3,8 @@ program Installer;
 uses
   Vcl.Forms,
   MainForm in 'MainForm.pas' {Form1},
-  AbstractInstallerPage in 'AbstractInstallerPage.pas';
+  AbstractInstallerPage in 'AbstractInstallerPage.pas',
+  LicenseInstallerPage in 'LicenseInstallerPage.pas';
 
 {$R *.res}
 

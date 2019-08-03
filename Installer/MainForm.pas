@@ -6,7 +6,7 @@ Uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
   Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.StdCtrls,
-  AbstractInstallerPage;
+  AbstractInstallerPage, LicenseInstallerPage;
 
 Type
   TForm1 = Class (TForm)
@@ -44,12 +44,13 @@ Type
     procedure BackButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure AgreeSheckBoxClick(Sender: TObject);
   Private
     FCurrentPage : TAbstractInstallerPage;
 
     FInitialPage : TAbstractInstallerPage;
     FActionPage : TAbstractInstallerPage;
-    FLicensePage : TAbstractInstallerPage;
+    FLicensePage : TLicenseInstallerPage;
     FSettingsPage : TAbstractInstallerPage;
     FProgressPage : TAbstractInstallerPage;
     FSuccessPage : TAbstractInstallerPage;
@@ -64,6 +65,11 @@ Var
 Implementation
 
 {$R *.DFM}
+
+Procedure TForm1.AgreeSheckBoxClick(Sender: TObject);
+begin
+FLicensePage.Agree := (Sender As TCheckBox).Checked;
+end;
 
 Procedure TForm1.BackButtonClick(Sender: TObject);
 begin
@@ -80,7 +86,7 @@ Procedure TForm1.FormCreate(Sender: TObject);
 begin
 FInitialPage := TAbstractInstallerPage.Create(OnPageSelectedChanged, OnPageSelectedChanged, InitialTabSheet);
 FActionPage := TAbstractInstallerPage.Create(OnPageSelectedChanged, OnPageSelectedChanged, ActionTabSheet);
-FLicensePage := TAbstractInstallerPage.Create(OnPageSelectedChanged, OnPageSelectedChanged, LicenseTabSheet);
+FLicensePage := TLicenseInstallerPage.Create(OnPageSelectedChanged, OnPageSelectedChanged, LicenseTabSheet);
 FSettingsPage := TAbstractInstallerPage.Create(OnPageSelectedChanged, OnPageSelectedChanged, SettingsTabSheet);
 FProgressPage := TAbstractInstallerPage.Create(OnPageSelectedChanged, OnPageSelectedChanged, ProgressTabSheet);
 FSuccessPage := TAbstractInstallerPage.Create(OnPageSelectedChanged, OnPageSelectedChanged, SuccessTabSheet);

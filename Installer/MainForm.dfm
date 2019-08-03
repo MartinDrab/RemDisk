@@ -55,7 +55,7 @@ object Form1: TForm1
     Top = 0
     Width = 393
     Height = 257
-    ActivePage = InitialTabSheet
+    ActivePage = LicenseTabSheet
     Align = alClient
     TabOrder = 1
     object ActionTabSheet: TTabSheet
@@ -216,6 +216,7 @@ object Form1: TForm1
           Height = 17
           Caption = 'I agree'
           TabOrder = 0
+          OnClick = AgreeSheckBoxClick
         end
       end
       object LicenseRichEdit: TRichEdit
