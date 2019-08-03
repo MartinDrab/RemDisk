@@ -113,6 +113,7 @@ object Form1: TForm1
         Height = 21
         Caption = 'Browse...'
         TabOrder = 1
+        OnClick = BrowseButtonClick
       end
       object StartMenuCheckBox: TCheckBox
         Left = 64
@@ -121,6 +122,7 @@ object Form1: TForm1
         Height = 25
         Caption = 'Create entry in Start Menu'
         TabOrder = 2
+        OnClick = StartMenuCheckBoxClick
       end
       object ShortcutCheckBox: TCheckBox
         Left = 64
@@ -129,6 +131,7 @@ object Form1: TForm1
         Height = 25
         Caption = 'Create shortcut on Desktop'
         TabOrder = 3
+        OnClick = ShortcutCheckBoxClick
       end
       object AllUsersCheckBox: TCheckBox
         Left = 64
@@ -137,6 +140,7 @@ object Form1: TForm1
         Height = 25
         Caption = 'Install for all users'
         TabOrder = 4
+        OnClick = AllUsersCheckBoxClick
       end
     end
     object ProgressTabSheet: TTabSheet

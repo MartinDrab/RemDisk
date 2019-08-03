@@ -6,7 +6,7 @@ Uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
   Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.StdCtrls,
-  AbstractInstallerPage, LicenseInstallerPage;
+  AbstractInstallerPage, LicenseInstallerPage, SettingsInstallerPage;
 
 Type
   TForm1 = Class (TForm)
@@ -45,13 +45,17 @@ Type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure AgreeSheckBoxClick(Sender: TObject);
+    procedure BrowseButtonClick(Sender: TObject);
+    procedure StartMenuCheckBoxClick(Sender: TObject);
+    procedure ShortcutCheckBoxClick(Sender: TObject);
+    procedure AllUsersCheckBoxClick(Sender: TObject);
   Private
     FCurrentPage : TAbstractInstallerPage;
 
     FInitialPage : TAbstractInstallerPage;
     FActionPage : TAbstractInstallerPage;
     FLicensePage : TLicenseInstallerPage;
-    FSettingsPage : TAbstractInstallerPage;
+    FSettingsPage : TSettingsInstallerPage;
     FProgressPage : TAbstractInstallerPage;
     FSuccessPage : TAbstractInstallerPage;
     FFailurePage : TAbstractInstallerPage;
@@ -74,9 +78,20 @@ begin
 FLicensePage.Agree := (Sender As TCheckBox).Checked;
 end;
 
+Procedure TForm1.AllUsersCheckBoxClick(Sender: TObject);
+begin
+FSettingsPage.AllUsers := (Sender As TCheckBox).Checked;
+end;
+
 Procedure TForm1.BackButtonClick(Sender: TObject);
 begin
 FCurrentPage.PreviousPressed;
+end;
+
+Procedure TForm1.BrowseButtonClick(Sender: TObject);
+begin
+If DirectoryOpenDialog.Execute Then
+  FSettingsPage.ProgramDirectory := DirectoryOpenDialog.FileName + '\RemDisk';
 end;
 
 Procedure TForm1.CancelButtonClick(Sender: TObject);
@@ -93,7 +108,7 @@ instSettings := TInstallerSettings.Create;
 FInitialPage := TAbstractInstallerPage.Create(instSettings, OnPageSelectedChanged, OnPageSelectedChanged, InitialTabSheet);
 FActionPage := TAbstractInstallerPage.Create(instSettings, OnPageSelectedChanged, OnPageSelectedChanged, ActionTabSheet);
 FLicensePage := TLicenseInstallerPage.Create(instSettings, OnPageSelectedChanged, OnPageSelectedChanged, LicenseTabSheet);
-FSettingsPage := TAbstractInstallerPage.Create(instSettings, OnPageSelectedChanged, OnPageSelectedChanged, SettingsTabSheet);
+FSettingsPage := TSettingsInstallerPage.Create(instSettings, OnPageSelectedChanged, OnPageSelectedChanged, SettingsTabSheet);
 FProgressPage := TAbstractInstallerPage.Create(instSettings, OnPageSelectedChanged, OnPageSelectedChanged, ProgressTabSheet);
 FSuccessPage := TAbstractInstallerPage.Create(instSettings, OnPageSelectedChanged, OnPageSelectedChanged, SuccessTabSheet);
 FFailurePage := TAbstractInstallerPage.Create(instSettings, OnPageSelectedChanged, OnPageSelectedChanged, FailureTabSheet);
@@ -143,6 +158,16 @@ If FCurrentPage = FSettingsPage Then
   ShortcutCheckBox.Checked := instSettings.DesktopShortcut;
   AllUsersCheckBox.Checked := instSettings.AllUsers;
   end;
+end;
+
+Procedure TForm1.ShortcutCheckBoxClick(Sender: TObject);
+begin
+FSettingsPage.DesktopShortcut := (Sender As TCheckBox).Checked;
+end;
+
+Procedure TForm1.StartMenuCheckBoxClick(Sender: TObject);
+begin
+FSettingsPage.StartMenu := (Sender As TCheckBox).Checked;
 end;
 
 End.
