@@ -91,7 +91,7 @@ FLicensePage.SetTargets(FSettingsPage, FActionPage, FFailurePage);
 FSettingsPage.SetTargets(FProgressPage, FLicensePage, FFailurePage);
 FProgressPage.SetTargets(FSuccessPage, FSettingsPage, FFailurePage);
 
-OnPageSelectedChanged(FCurrentPage);
+OnPageSelectedChanged(FInitialPage);
 end;
 
 Procedure TForm1.FormDestroy(Sender: TObject);
