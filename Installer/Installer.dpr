@@ -13,7 +13,8 @@ uses
   ShortcutInstallTask in 'ShortcutInstallTask.pas',
   DeleteInstallTask in 'DeleteInstallTask.pas',
   CopyFileInstallTask in 'CopyFileInstallTask.pas',
-  CreateDirInstallTask in 'CreateDirInstallTask.pas';
+  CreateDirInstallTask in 'CreateDirInstallTask.pas',
+  ResExtractInstallTask in 'ResExtractInstallTask.pas';
 
 {$R *.res}
 
