@@ -33,7 +33,8 @@ Type
 Implementation
 
 Uses
-  Windows, SysUtils, Classes, ShellAPI, ShlObj, ComObj, ActiveX, Registry;
+  Windows, SysUtils, Classes, ShellAPI, ShlObj, ComObj, ActiveX,
+  DeleteInstallTask;
 
 
 Constructor TShortcutInstallTask.Create(AInstallerSettings:TInstallerSettings; AType:EShortcutType; ATargetFile:WideString; ADescription:WideString; ACritical:Boolean = False);
@@ -125,6 +126,11 @@ end;
 
 Function TShortcutInstallTask.CounterTask:TAbstractInstallTask;
 begin
+Result := Inherited CounterTask;
+If Assigned(Result) Then
+  Result.Free;
+
+Result := TDeleteFileInstallTask.Create(InstallerSettings, FLinkName);
 end;
 
 
