@@ -10,7 +10,8 @@ uses
   ProgressInstallerPage in 'ProgressInstallerPage.pas',
   InstallTaskThread in 'InstallTaskThread.pas',
   AbstractInstallTask in 'AbstractInstallTask.pas',
-  ShortcutInstallTask in 'ShortcutInstallTask.pas';
+  ShortcutInstallTask in 'ShortcutInstallTask.pas',
+  DeleteInstallTask in 'DeleteInstallTask.pas';
 
 {$R *.res}
 
