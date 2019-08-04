@@ -163,6 +163,7 @@
         <DCCReference Include="AbstractInstallTask.pas"/>
         <DCCReference Include="ShortcutInstallTask.pas"/>
         <DCCReference Include="DeleteInstallTask.pas"/>
+        <DCCReference Include="CopyFileInstallTask.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

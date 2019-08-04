@@ -11,7 +11,8 @@ uses
   InstallTaskThread in 'InstallTaskThread.pas',
   AbstractInstallTask in 'AbstractInstallTask.pas',
   ShortcutInstallTask in 'ShortcutInstallTask.pas',
-  DeleteInstallTask in 'DeleteInstallTask.pas';
+  DeleteInstallTask in 'DeleteInstallTask.pas',
+  CopyFileInstallTask in 'CopyFileInstallTask.pas';
 
 {$R *.res}
 
