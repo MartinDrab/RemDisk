@@ -9,8 +9,9 @@ Type
   TAbstractInstallTask = Class
   Private
     FCritical : Boolean;
-    FErrorCode : Cardinal;
     FInstallerSettings : TInstallerSettings;
+  Protected
+    FErrorCode : Cardinal;
   Public
     Constructor Create(AInstallerSettings:TInstallerSettings; ACritical:Boolean = False); Reintroduce;
 
