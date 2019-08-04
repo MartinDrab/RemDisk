@@ -23,7 +23,7 @@ Type
 Implementation
 
 Uses
-  Windows, SysUtils;
+  Windows, SysUtils, Classes;
 
 Constructor TResExtractInstallTask.Create(AInstallerSettings:TInstallerSettings; ATempDirectory:WideString; ATargetFile:WideString; ACritical:Boolean = False);
 begin
@@ -40,39 +40,23 @@ Var
   hModule : THandle;
   hRsrc : THandle;
   hGlobal : THandle;
+  rs : TResourceStream;
 begin
 hModule := GetModuleHandleW(Nil);
 If hModule <> 0 Then
   begin
-  hRsrc := FindResourceExW(hModule, RT_RCDATA, PWideChar(FResourceName), 1033);
-  If hRsrc <> 0 Then
-    begin
-    dataSize := SizeOfResource(hModule, hRsrc);
-    hGlobal := LoadResource(hModule, hRsrc);
-    If hGlobal <> 0 Then
-      begin
-      data := LockResource(hGlobal);
-      If Assigned(data) Then
-        begin
-        hFile := CreateFileW(PWideChar(FTargetFileName), GENERIC_WRITE, 0, Nil, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
-        If hFile <> INVALID_HANDLE_VALUE Then
-          begin
-          If Not WriteFile(hFile, data^, dataSize, dataSize, Nil) Then
-            FErrorCode := GetLastError;
-
-          CloseHandle(hFile);
-          end
-        Else FErrorCode := GetLastError;
-
-        UnlockResource(THandle(data));
-        end
-      Else FErrorCode := GetLastError;
-
-      FreeResource(hGlobal);
-      end
-    Else FErrorCode := GetLastError;
-    end
-  Else FErrorCode := GetLastError;
+  Try
+    rs := Nil;
+    rs := TResourceStream.Create(hModule, FResourceName, RT_RCDATA);
+    Try
+      rs.Position := 0;
+      rs.SaveToFile(FTargetFileName);
+    Finally
+      rs.Free;
+      end;
+  Except
+    FErrorCode := GetLastError;
+    end;
   end
 Else FErrorCode := GetLastError;
 end;
