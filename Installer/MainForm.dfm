@@ -285,8 +285,9 @@ object Form1: TForm1
       end
     end
   end
-  object DirectoryOpenDialog: TOpenDialog
-    Left = 252
-    Top = 136
+  object DirectorySaveDialog: TSaveDialog
+    Options = [ofHideReadOnly, ofNoTestFileCreate, ofNoNetworkButton, ofEnableSizing, ofDontAddToRecent]
+    Left = 260
+    Top = 144
   end
 end

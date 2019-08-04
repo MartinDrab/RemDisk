@@ -28,7 +28,6 @@ Type
     StartMenuCheckBox: TCheckBox;
     ShortcutCheckBox: TCheckBox;
     AllUsersCheckBox: TCheckBox;
-    DirectoryOpenDialog: TOpenDialog;
     LocationLabel: TLabel;
     InstallProgressBar: TProgressBar;
     OperationListBox: TListBox;
@@ -39,16 +38,17 @@ Type
     AgreePanel: TPanel;
     AgreeSheckBox: TCheckBox;
     LicenseRichEdit: TRichEdit;
+    DirectorySaveDialog: TSaveDialog;
     procedure NextButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
     procedure BackButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure AgreeSheckBoxClick(Sender: TObject);
-    procedure BrowseButtonClick(Sender: TObject);
     procedure StartMenuCheckBoxClick(Sender: TObject);
     procedure ShortcutCheckBoxClick(Sender: TObject);
     procedure AllUsersCheckBoxClick(Sender: TObject);
+    procedure BrowseButtonClick(Sender: TObject);
   Private
     FCurrentPage : TAbstractInstallerPage;
 
@@ -90,8 +90,8 @@ end;
 
 Procedure TForm1.BrowseButtonClick(Sender: TObject);
 begin
-If DirectoryOpenDialog.Execute Then
-  FSettingsPage.ProgramDirectory := DirectoryOpenDialog.FileName + '\RemDisk';
+If DirectorySaveDialog.Execute Then
+  FSettingsPage.ProgramDirectory := DirectorySaveDialog.FileName + '\RemDisk';
 end;
 
 Procedure TForm1.CancelButtonClick(Sender: TObject);
