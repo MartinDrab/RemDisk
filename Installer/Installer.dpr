@@ -12,7 +12,8 @@ uses
   AbstractInstallTask in 'AbstractInstallTask.pas',
   ShortcutInstallTask in 'ShortcutInstallTask.pas',
   DeleteInstallTask in 'DeleteInstallTask.pas',
-  CopyFileInstallTask in 'CopyFileInstallTask.pas';
+  CopyFileInstallTask in 'CopyFileInstallTask.pas',
+  CreateDirInstallTask in 'CreateDirInstallTask.pas';
 
 {$R *.res}
 
