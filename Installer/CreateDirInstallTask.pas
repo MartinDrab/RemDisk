@@ -62,7 +62,7 @@ Result := Inherited CounterTask;
 If Assigned(Result) Then
   Result.Free;
 
-Result := TDeleteFileInstallTask.Create(InstallerSettings, FTargetFileName, Critical);
+Result := TDeleteFileInstallTask.Create(InstallerSettings, FTargetFileName);
 end;
 
 
