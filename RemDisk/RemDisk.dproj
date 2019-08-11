@@ -1,12 +1,12 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <ProjectGuid>{EC664440-EA4E-4EF7-BFFF-C936D41AD509}</ProjectGuid>
-        <ProjectVersion>18.6</ProjectVersion>
+        <ProjectVersion>18.7</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <MainSource>RemDisk.dpr</MainSource>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
-        <Platform Condition="'$(Platform)'==''">Win64</Platform>
+        <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>3</TargetedPlatforms>
         <AppType>Application</AppType>
     </PropertyGroup>
