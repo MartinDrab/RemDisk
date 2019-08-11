@@ -17,8 +17,8 @@
 
 static DWORD _AddFile(HANDLE hUpdate, BOOL x64, const wchar_t *aFileName)
 {
-	DWORD ret = 0;
-	HANDLE hFile = NULL;
+	HANDLE hFile = INVALID_HANDLE_VALUE;
+	DWORD ret = ERROR_SUCCESS;
 	wchar_t fileName[MAX_PATH];
 	wchar_t resourceName[MAX_PATH];
 	LARGE_INTEGER fileSize;
@@ -59,7 +59,7 @@ static DWORD _AddFile(HANDLE hUpdate, BOOL x64, const wchar_t *aFileName)
 		goto FreeBuffer;
 	}
 
-	if (!UpdateResourceW(hUpdate, resourceName, RT_RCDATA, 1033, buffer, fileSize.LowPart)) {
+	if (!UpdateResourceW(hUpdate, RT_RCDATA, resourceName, 1033, buffer, fileSize.LowPart)) {
 		ret = GetLastError();
 		fprintf(stderr, "UpdateResourceW: %u\n", ret);
 		goto FreeBuffer;
@@ -73,6 +73,77 @@ Exit:
 	return ret;
 }
 
+
+static DWORD _AddFilesForPlatform(HANDLE hUpdate, const wchar_t **Files, size_t FileCount, BOOL x64)
+{
+	DWORD ret = ERROR_SUCCESS;
+
+	for (size_t i = 0; i < FileCount; ++i) {
+		ret = _AddFile(hUpdate, x64, *Files);
+		if (ret != ERROR_SUCCESS)
+			break;
+
+		++Files;
+	}
+
+	return ret;
+}
+
+
+static DWORD _AddStringList(HANDLE hUpdate, const wchar_t *ResourceName, const wchar_t **Strings, size_t StringsCount)
+{
+	size_t len = 0;
+	wchar_t *tmp = NULL;
+	DWORD ret = ERROR_SUCCESS;
+	size_t multiStringSize = sizeof(wchar_t);
+	wchar_t *multiStringBuffer = NULL;
+
+	for (size_t i = 0; i < StringsCount; ++i) {
+		len = wcslen(Strings[i]) + 1;
+		multiStringSize += (len * sizeof(wchar_t));
+	}
+
+	multiStringBuffer = HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, multiStringSize);
+	if (multiStringBuffer == NULL) {
+		ret = GetLastError();
+		fprintf(stderr, "HeapAlloc: %u\n", ret);
+		goto Exit;
+	}
+
+	tmp = multiStringBuffer;
+	for (size_t i = 0; i < StringsCount; ++i) {
+		len = wcslen(Strings[i]) + 1;
+		memcpy(tmp, Strings[i], len * sizeof(wchar_t));
+		tmp += len;
+	}
+
+	if (!UpdateResourceW(hUpdate, RT_RCDATA, ResourceName, 1033, multiStringBuffer, (DWORD)multiStringSize)) {
+		ret = GetLastError();
+		fprintf(stderr, "UpdateResourceW: %u\n", ret);
+		goto FreeMS;
+	}
+FreeMS:
+	HeapFree(GetProcessHeap(), 0, multiStringBuffer);
+Exit:
+	return ret;
+}
+
+
+static DWORD _AddAllFieList(HANDLE hUpdate, const wchar_t **Files, size_t FileCount)
+{
+	DWORD ret = ERROR_SUCCESS;
+
+	ret = _AddFilesForPlatform(hUpdate, Files, FileCount, FALSE);
+	if (ret == ERROR_SUCCESS)
+		ret = _AddFilesForPlatform(hUpdate, Files, FileCount, TRUE);
+
+	if (ret == ERROR_SUCCESS) {
+		fprintf(stderr, "Saving file list as %ls...\n", RESOURCE_FILELIST);
+		ret = _AddStringList(hUpdate, RESOURCE_FILELIST, Files, FileCount);
+	}
+
+	return ret;
+}
 
 
 int wmain(int argc, wchar_t *argv[])
