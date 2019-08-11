@@ -16,7 +16,8 @@ uses
   CreateDirInstallTask in 'CreateDirInstallTask.pas',
   ResExtractInstallTask in 'ResExtractInstallTask.pas',
   CreateDeviceInstallTask in 'CreateDeviceInstallTask.pas',
-  SetupApi in 'SetupApi.pas';
+  SetupApi in 'SetupApi.pas',
+  InstallINFInstallTask in 'InstallINFInstallTask.pas';
 
 {$R *.res}
 

@@ -30,6 +30,8 @@ Function SetupDiCreateDeviceInfoW(ADeviceInfoSet:HDEVINFO; ADeviceName:PWideChar
 Function SetupDiSetDeviceRegistryPropertyW(ADeviceInfoSet:HDEVINFO; Var ADeviceInfo:SP_DEVINFO_DATA; AProperty:Cardinal; APropertyBuffer:Pointer; APropertyBufferSize:Cardinal):LongBool; StdCall;
 Function SetupDiCallClassInstaller(AInstallFunction:Cardinal; ADeviceInfoSet:HDEVINFO; Var ADevInfoData:SP_DEVINFO_DATA):LongBool; StdCall;
 Function UpdateDriverForPlugAndPlayDevices(AHwndParent:HWND; AHardwareId:PWideChar; AFullInfPath:PWideChar; AInstallFlags:Cardinal; ARebootRequired:PLongBool):LongBool; StdCall;
+Procedure InstallHinfSectionW(AWindow:HWND; AModuleHandle:THandle; ACommandLine:PWideChar; AShowCommand:Cardinal); StdCall;
+
 
 Implementation
 
@@ -43,6 +45,7 @@ Function SetupDiCreateDeviceInfoW(ADeviceInfoSet:HDEVINFO; ADeviceName:PWideChar
 Function SetupDiSetDeviceRegistryPropertyW(ADeviceInfoSet:HDEVINFO; Var ADeviceInfo:SP_DEVINFO_DATA; AProperty:Cardinal; APropertyBuffer:Pointer; APropertyBufferSize:Cardinal):LongBool; StdCall; External SetupApiDll;
 Function SetupDiCallClassInstaller(AInstallFunction:Cardinal; ADeviceInfoSet:HDEVINFO; Var ADevInfoData:SP_DEVINFO_DATA):LongBool; StdCall; External SetupApiDll;
 Function UpdateDriverForPlugAndPlayDevices(AHwndParent:HWND; AHardwareId:PWideChar; AFullInfPath:PWideChar; AInstallFlags:Cardinal; ARebootRequired:PLongBool):LongBool; StdCall; External SetupApiDll;
+Procedure InstallHinfSectionW(AWindow:HWND; AModuleHandle:THandle; ACommandLine:PWideChar; AShowCommand:Cardinal); StdCall; External SetupApiDll;
 
 
 
