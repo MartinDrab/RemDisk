@@ -4,6 +4,7 @@ __history
 .vs
 *.user
 *.stat
-bin
-lib
-tmp
+/bin
+/lib
+/tmp
+/test
