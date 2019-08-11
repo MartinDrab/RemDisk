@@ -27,6 +27,7 @@ Type
     StartMenu : Boolean;
     QuickLaunch : Boolean;
     FileList : TStringList;
+    INFList : TStringList;
     Description : WideString;
     StartMenuDir : WideString;
 
@@ -49,6 +50,7 @@ DesktopShortcut := True;
 StartMenu := True;
 AllUsers := True;
 FileList := TStringList.Create;
+INFList := TStringList.Create;
 Description := 'RemDisk Virtual Disk Manager';
 RSCReadString('DESCRIPTION', Description);
 StartMenuDir := 'RemDisk';
@@ -62,10 +64,12 @@ FileList.Add('RemBus.sys');
 FileList.Add('RemBus.inf');
 FileList.Add('RemBus.cat');
 RSCReadStringList('FILES', FileList);
+RSCReadStringList('INFS', INFList);
 end;
 
 Destructor TInstallerSettings.Destroy;
 begin
+INFList.Free;
 FileList.Free;
 Inherited Destroy;
 end;
