@@ -166,6 +166,7 @@
         <DCCReference Include="CopyFileInstallTask.pas"/>
         <DCCReference Include="CreateDirInstallTask.pas"/>
         <DCCReference Include="ResExtractInstallTask.pas"/>
+        <DCCReference Include="CreateDeviceInstallTask.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
