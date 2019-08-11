@@ -90,6 +90,23 @@ static DWORD _AddFilesForPlatform(HANDLE hUpdate, const wchar_t **Files, size_t 
 }
 
 
+static DWORD _AddString(HANDLE hUpdate, const wchar_t *ResourceName, const wchar_t *String)
+{
+	DWORD ret = ERROR_SUCCESS;
+	size_t len = 0;
+
+	len = (wcslen(String) + 1) * sizeof(wchar_t);
+	if (!UpdateResourceW(hUpdate, RT_RCDATA, ResourceName, 1033, (void *)String, (DWORD)len)) {
+		ret = GetLastError();
+		fprintf(stderr, "UpdateResourceW: %u\n", ret);
+		goto Exit;
+	}
+
+Exit:
+	return ret;
+}
+
+
 static DWORD _AddStringList(HANDLE hUpdate, const wchar_t *ResourceName, const wchar_t **Strings, size_t StringsCount)
 {
 	size_t len = 0;
