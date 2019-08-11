@@ -25,15 +25,15 @@ static DWORD _AddFile(HANDLE hUpdate, BOOL x64, const wchar_t *aFileName)
 	void *buffer = NULL;
 
 	if (x64) {
-		swprintf(fileName, sizeof(fileName) / sizeof(fileName[0]), L"%ls\\%ls", L"x64\\", aFileName);
+		swprintf(fileName, sizeof(fileName) / sizeof(fileName[0]), L"%ls\\%ls", L"x64", aFileName);
 		swprintf(resourceName, sizeof(resourceName) / sizeof(resourceName[0]), L"%ls%ls", RESOURCE_PREFIX_X64, aFileName);
 	} else {
-		swprintf(fileName, sizeof(fileName) / sizeof(fileName[0]), L"%ls\\%ls", L"x86\\", aFileName);
+		swprintf(fileName, sizeof(fileName) / sizeof(fileName[0]), L"%ls\\%ls", L"x86", aFileName);
 		swprintf(resourceName, sizeof(resourceName) / sizeof(resourceName[0]), L"%ls%ls", RESOURCE_PREFIX_X86, aFileName);
 	}
 
 	fprintf(stderr, "Adding file %ls as %ls...\n", fileName, resourceName);
-	hFile = CreateFileW(aFileName, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	hFile = CreateFileW(fileName, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE) {
 		ret = GetLastError();
 		fprintf(stderr, "CreateFileW: %u\n", ret);
@@ -162,6 +162,24 @@ static DWORD _AddAllFieList(HANDLE hUpdate, const wchar_t **Files, size_t FileCo
 	return ret;
 }
 
+#define APP_NAME					L"RemDisk"
+#define APP_DESCRIPTION				L"RemDisk Virtual Disk Manager"
+
+static const wchar_t *_fileList[] = {
+	L"RemBus.inf",
+	L"RemBus.sys",
+	L"RemBus.cat",
+	L"RemDisk.inf",
+	L"RemDisk.sys",
+	L"RemDisk.cat",
+	L"RemDisk.dll",
+	L"RemDisk.exe",
+};
+
+static const wchar_t *_infList[] = {
+	L"RemDisk.inf"
+};
+
 
 int wmain(int argc, wchar_t *argv[])
 {
@@ -179,6 +197,16 @@ int wmain(int argc, wchar_t *argv[])
 		fprintf(stderr, "BeginUpdateResourceW: %u\n", ret);
 		return ret;
 	}
+
+	ret = _AddAllFieList(hUpdate, _fileList, sizeof(_fileList) / sizeof(_fileList[0]));
+	if (ret == 0)
+		ret = _AddStringList(hUpdate, RESOURCE_INFLIST, _infList, sizeof(_infList) / sizeof(_infList[0]));
+	
+	if (ret == ERROR_SUCCESS)
+		ret = _AddString(hUpdate, RESOURCE_APPNAME, APP_NAME);
+
+	if (ret == 0)
+		ret = _AddString(hUpdate, RESOURCE_DESCRIPTION, APP_DESCRIPTION);
 
 	EndUpdateResourceW(hUpdate, ret != 0);
 
