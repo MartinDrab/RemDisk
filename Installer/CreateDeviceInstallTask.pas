@@ -14,7 +14,7 @@ Type
     FHardwareIds : TStringList;
     FDeviceId : WideString;
   Public
-    Constructor Create(AInstallerSettings:TInstallerSettings; AINFFileName:WideString; ADeviceId:WideString; AClassGuid:TGuid; AHardwareIds:TStrings; ACritical:Boolean = False); Reintroduce;
+    Constructor Create(AInstallerSettings:TInstallerSettings; AINFFileName:WideString; ADeviceId:WideString; AHardwareIds:TStrings; ACritical:Boolean = False); Reintroduce;
 
     Function CounterTask:TAbstractInstallTask; Override;
 
@@ -55,11 +55,29 @@ Function SetupDiSetDeviceRegistryPropertyW(ADeviceInfoSet:HDEVINFO; Var ADeviceI
 Function SetupDiCallClassInstaller(AInstallFunction:Cardinal; ADeviceInfoSet:HDEVINFO; Var ADevInfoData:SP_DEVINFO_DATA):LongBool; StdCall; External SetupApiDll;
 Function UpdateDriverForPlugAndPlayDevices(AHwndParent:HWND; AHardwareId:PWideChar; AFullInfPath:PWideChar; AInstallFlags:Cardinal; ARebootRequired:PLongBool):LongBool; StdCall; External SetupApiDll;
 
-Constructor TCreateDeviceInstallTask.Create(AInstallerSettings:TInstallerSettings; AINFFileName:WideString; ADeviceId:WideString; AClassGuid:TGuid; AHardwareIds:TStrings; ACritical:Boolean = False);
+Constructor TCreateDeviceInstallTask.Create(AInstallerSettings:TInstallerSettings; AINFFileName:WideString; ADeviceId:WideString; AHardwareIds:TStrings; ACritical:Boolean = False);
+Var
+  stringGuid : WideString;
+  line : WideString;
+  infContent : TStringList;
 begin
 Inherited Create(InstallerSettings, ACritical);
 FINFFileName := AINFFileName;
-FClassGuid := AClassGuid;
+infContent := TStringList.Create;
+infContent.LoadFromFile(FINFFileName);
+stringGuid := '';
+For line In infContent Do
+  begin
+  If Pos(WideString('ClassGuid='), line) = 1 Then
+    begin
+    stringGuid := Copy(line, Pos('{', line), Pos('}', line) - Pos('{', line) + 1);
+    FClassGuid := StringToGuid(stringGuid);
+    Break;
+    end;
+  end;
+
+infContent.Free;
+
 FDeviceId := ADeviceId;
 FHardwareIds := TStringList.Create;
 FHardwareIds.AddStrings(AHardwareIds);
