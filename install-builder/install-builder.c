@@ -13,6 +13,15 @@
 #define RESOURCE_FILELIST			L"FILES"
 #define RESOURCE_INFLIST			L"INFS"
 
+#define RESOURCE_TYPE				RT_RCDATA
+#define RESOURCE_LANGUAGE			1033
+
+
+
+static BOOL _UpdateDataResource(HANDLE hUpdate, const wchar_t *Name, const void *Data, DWORD Size)
+{
+	return UpdateResourceW(hUpdate, RESOURCE_TYPE, Name, RESOURCE_LANGUAGE, Data, Size);
+}
 
 
 static DWORD _AddFile(HANDLE hUpdate, BOOL x64, const wchar_t *aFileName)
@@ -24,6 +33,8 @@ static DWORD _AddFile(HANDLE hUpdate, BOOL x64, const wchar_t *aFileName)
 	LARGE_INTEGER fileSize;
 	void *buffer = NULL;
 
+	memset(fileName, 0, sizeof(fileName));
+	memset(resourceName, 0, sizeof(resourceName));
 	if (x64) {
 		swprintf(fileName, sizeof(fileName) / sizeof(fileName[0]), L"%ls\\%ls", L"x64", aFileName);
 		swprintf(resourceName, sizeof(resourceName) / sizeof(resourceName[0]), L"%ls%ls", RESOURCE_PREFIX_X64, aFileName);
@@ -59,7 +70,7 @@ static DWORD _AddFile(HANDLE hUpdate, BOOL x64, const wchar_t *aFileName)
 		goto FreeBuffer;
 	}
 
-	if (!UpdateResourceW(hUpdate, RT_RCDATA, resourceName, 1033, buffer, fileSize.LowPart)) {
+	if (!_UpdateDataResource(hUpdate, resourceName, buffer, fileSize.LowPart)) {
 		ret = GetLastError();
 		fprintf(stderr, "UpdateResourceW: %u\n", ret);
 		goto FreeBuffer;
@@ -96,7 +107,7 @@ static DWORD _AddString(HANDLE hUpdate, const wchar_t *ResourceName, const wchar
 	size_t len = 0;
 
 	len = (wcslen(String) + 1) * sizeof(wchar_t);
-	if (!UpdateResourceW(hUpdate, RT_RCDATA, ResourceName, 1033, (void *)String, (DWORD)len)) {
+	if (!_UpdateDataResource(hUpdate, ResourceName, (void *)String, (DWORD)len)) {
 		ret = GetLastError();
 		fprintf(stderr, "UpdateResourceW: %u\n", ret);
 		goto Exit;
@@ -134,7 +145,7 @@ static DWORD _AddStringList(HANDLE hUpdate, const wchar_t *ResourceName, const w
 		tmp += len;
 	}
 
-	if (!UpdateResourceW(hUpdate, RT_RCDATA, ResourceName, 1033, multiStringBuffer, (DWORD)multiStringSize)) {
+	if (!_UpdateDataResource(hUpdate, ResourceName, multiStringBuffer, (DWORD)multiStringSize)) {
 		ret = GetLastError();
 		fprintf(stderr, "UpdateResourceW: %u\n", ret);
 		goto FreeMS;
@@ -208,7 +219,10 @@ int wmain(int argc, wchar_t *argv[])
 	if (ret == 0)
 		ret = _AddString(hUpdate, RESOURCE_DESCRIPTION, APP_DESCRIPTION);
 
-	EndUpdateResourceW(hUpdate, ret != 0);
+	if (!EndUpdateResourceW(hUpdate, ret != 0)) {
+		ret = GetLastError();
+		fprintf(stderr, "EndUpdateResourceW: %u\n", ret);
+	}
 
 	return 0;
 }
