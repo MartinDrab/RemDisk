@@ -101,7 +101,7 @@ object Form1: TForm1
       end
       object DirectoryEdit: TEdit
         Left = 64
-        Top = 64
+        Top = 69
         Width = 209
         Height = 21
         TabOrder = 0
